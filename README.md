@@ -19,7 +19,7 @@ The uploaded code is the first of the seven research requirements submitted from
 # Single Agent Warm-Up
 Before playing multiple snake games, I first solved a single snake game on dqn, but was able to tweet and generate decent results.
 
-https://twitter.com/kimbring2/status/963671596610326528
+Sigle Agent Result video : https://twitter.com/kimbring2/status/963671596610326528
 
 # Reference
 In this research, there was no given code for environment and algorithm, so I need to create and find a multi-agent snake game and self-play algorithm. Many excellent other researchers have published environment and algorithm on github, so I can use them as a reference to conduct research presented by OpenAI.
