@@ -1,7 +1,7 @@
+![Slither.io Game Play](https://github.com/kimbring2/MineRL/blob/master/monitor/slitherio.gif)
 
 # OpenAI_Requests-For-Research-2_Slitherin
 Research for improving self-play instability
-
 
 # Research Introduction
 <p>⭐⭐ <strong>Slitherin'.</strong> Implement and solve a multiplayer clone of the classic <a href="https://www.youtube.com/watch?v=wDbTP0B94AM">Snake</a> game (see <a href="https://slither.io">slither.io</a> for inspiration) as a <a href="https://github.com/openai/gym">Gym</a> environment.</p>
@@ -23,6 +23,6 @@ https://github.com/bhairavmehta95/slitherin-gym - Multi Snake Env
 https://github.com/ingkanit/multi-snake-RL - PPO2 for Multi Snake playing 
 https://web.stanford.edu/~surag/posts/alphazero.html - Self Play Algorithm
 
-Once again, thanks for these researchers
+Once again, thanks for these researchers.
 
 # Reference
