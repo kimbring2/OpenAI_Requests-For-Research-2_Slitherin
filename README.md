@@ -1,3 +1,4 @@
+
 # OpenAI_Requests-For-Research-2_Slitherin
 Research for improving self-play instability
 
@@ -21,3 +22,7 @@ In this research, there was no given code for environment and algorithm, so I ne
 https://github.com/bhairavmehta95/slitherin-gym - Multi Snake Env  
 https://github.com/ingkanit/multi-snake-RL - PPO2 for Multi Snake playing 
 https://web.stanford.edu/~surag/posts/alphazero.html - Self Play Algorithm
+
+Once again, thanks for these researchers
+
+# Reference
