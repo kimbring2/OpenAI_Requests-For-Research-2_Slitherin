@@ -35,5 +35,7 @@ The experiment first targeted two snakes. The height and width of env is 15x15. 
 
 The DQN network uses a structure like Double-Dueling-DQN (https://github.com/awjuliani/DeepRL-Agents/blob/master/Double-Dueling-DQN.ipynb) raised by Arthur Juliani. The CNN kernel size and the number of filters were slightly adjusted and the rest were used as is.
 
+In order to apply the Self-Play algorithm to DQN, I create two buffer that store agent trajectory, which is different from the single agent DQN. If two snakes die while recording all the state, action, reward, and done information of two snakes from the episode, train the network with the data of the remaining snake until the end. And the number of episode limit steps In the case of ending beyond, I use+ a method of learning one choice at random.
+
 # Multi Snake Experiment Result
 Still Traning
