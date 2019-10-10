@@ -1,6 +1,7 @@
 # OpenAI_Requests-For-Research-2_Slitherin
 Research for improving self-play instability
 
+
 # Research Introduction
 <p>⭐⭐ <strong>Slitherin'.</strong> Implement and solve a multiplayer clone of the classic <a href="https://www.youtube.com/watch?v=wDbTP0B94AM">Snake</a> game (see <a href="https://slither.io">slither.io</a> for inspiration) as a <a href="https://github.com/openai/gym">Gym</a> environment.</p>
 <ul>
@@ -9,8 +10,10 @@ Research for improving self-play instability
 <li>Inspect the learned behavior: does the agent learn to competently pursue food and avoid other snakes? Does the agent learn to attack, trap, or gang up against the competing snakes? Tweet us videos of the learned policies!</li>
 </ul>
 
-# Single Agent Warm-up
+# Single Agent Warm-Up
+Before playing multiple snake games, I first solved a single snake game on dqn, but was able to tweet and generate decent results.
 
+https://twitter.com/kimbring2/status/963671596610326528
 
 # Reference
 In this research, there was no given code for environment and algorithm, so I need to create and find a multi-agent snake game and self-play algorithm. Many excellent other researchers have published environment and algorithm on github, so I can use them as a reference to conduct research presented by OpenAI.
