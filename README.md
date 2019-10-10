@@ -28,7 +28,7 @@ https://web.stanford.edu/~surag/posts/alphazero.html - Self Play Algorithm
 Once again, thanks for these researchers.
 
 # Experiment Setting
-The experiment first targeted two snakes. The height and width of env is 15x15. In addition to the current state, the previous three states can be used together, so that in addition to the snake position information, direction information can be grasped together by a network. 
+The experiment first targeted two snakes. The height and width of env is 15x15. In addition to the current state, the previous three states can be used together, so that in addition to the snake position information, direction information can be grasped together by a network. Each snake can move up, down, right, left, and put 3 fruits that can earn 1 reward upon acquisition for each episode. Here snakes must compete with each other and get the maximum reward without crossing to the edge.
 
 # Multi Snake Experiment Result
 
