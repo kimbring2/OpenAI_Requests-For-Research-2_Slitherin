@@ -3,6 +3,9 @@
 
 Research for improving self-play instability
 
+# Requirements
+Trarning is done using tensorflow-gpu == 1.13.1, and the environment only needs to import the uploaded multi_snake.py.
+
 # Research Introduction
 The uploaded code is the first of the seven research requirements submitted from https://openai.com/blog/requests-for-research-2/.
 
