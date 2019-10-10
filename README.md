@@ -9,8 +9,12 @@ Research for improving self-play instability
 <li>Inspect the learned behavior: does the agent learn to competently pursue food and avoid other snakes? Does the agent learn to attack, trap, or gang up against the competing snakes? Tweet us videos of the learned policies!</li>
 </ul>
 
+# Single Agent Warm-up
+
+
 # Reference
+In this research, there was no given code for environment and algorithm, so I need to create and find a multi-agent snake game and self-play algorithm. Many excellent other researchers have published environment and algorithm on github, so I can use them as a reference to conduct research presented by OpenAI.
 
-
-https://github.com/bhairavmehta95/slitherin-gym
-https://github.com/ingkanit/multi-snake-RL
+https://github.com/bhairavmehta95/slitherin-gym - Multi Snake Env  
+https://github.com/ingkanit/multi-snake-RL - PPO2 for Multi Snake playing 
+https://web.stanford.edu/~surag/posts/alphazero.html - Self Play Algorithm
