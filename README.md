@@ -1,4 +1,4 @@
-# OpenAI Requests For Research 2 Slitherin
+# OpenAI Requests For Research 2.0 Slitherin
 ![Slither.io Game Play](https://github.com/kimbring2/OpenAI_Requests-For-Research-2_Slitherin/blob/master/image/slitherio.gif)
 
 Research for improving self-play instability
