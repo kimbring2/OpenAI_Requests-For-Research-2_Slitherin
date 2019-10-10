@@ -44,8 +44,10 @@ The DQN network uses a structure like Double-Dueling-DQN (https://github.com/awj
 | CNN Policy Layer 1 | num_outputs=16, kernel_size=[3,3], stride=[1,1] |
 | CNN Policy Layer 2 | num_outputs=32, kernel_size=[3,3], stride=[1,1] |
 | CNN Policy Layer 3 | num_outputs=32, kernel_size=[3,3], stride=[1,1] |
+| Dueling DQN Layer | Divide output of CNN Policy Layer 3 by axis 3 into two stream |
 | Advantage Layer | xavier_initialization, size=[1296, 4] |
 | Value Layer | xavier_initialization, size=[1296, 1] |
+| Current Q | Value + (Advantage - Mean of Advantage) |
 | TD Error | Target Q - Current Q |
 | Loss | Reduce mean of TD Error |
 
