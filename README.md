@@ -48,6 +48,7 @@ The DQN network uses a structure like Double-Dueling-DQN (https://github.com/awj
 | Advantage Layer | Faltten of first stream of Dueling DQN, xavier_initialization, size=[1296, 4] |
 | Value Layer | Faltten of second stream of Dueling DQN, xavier_initialization, size=[1296, 1] |
 | Current Q | Value + (Advantage - Mean of Advantage) |
+| Target Q | Reward + (Discount factor * Double Q * Done) | 
 | TD Error | Target Q - Current Q |
 | Loss | Reduce mean of TD Error |
 
@@ -59,6 +60,7 @@ In order to apply the Self-Play algorithm to DQN, I create two buffer that store
 | update_freq  | 4  | How often to perform a training step |
 | startE  | 1  | Starting chance of random action |
 | endE  | 0.1  | Final chance of random action |
+| y  | .99  | Discount factor on the target Q-values |
 | annealing_steps  | 100000  | How many steps of training to reduce startE to endE |
 | num_episodes  | 100000  | How many episodes of game environment to train network with |
 | max_epLength  | 200  | The max allowed length of our episode |
