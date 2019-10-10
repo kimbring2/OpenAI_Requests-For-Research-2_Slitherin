@@ -69,6 +69,6 @@ In order to apply the Self-Play algorithm to DQN, I create two buffer that store
 | Paramter | Result video |
 | ------------- | ------------- |
 | annealing_steps : 100000, num_episodes : 100000, pre_train_steps : 100000, startE : 1, endE : 0.1 | <img src="image/play.gif" width="300"> |
-|  |  |
+| annealing_steps : 100000, num_episodes : 100000, pre_train_steps : 100000, startE : 0.1, endE : 0.0001 | |
 
 Still traning with another paramter
