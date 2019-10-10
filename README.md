@@ -61,9 +61,14 @@ In order to apply the Self-Play algorithm to DQN, I create two buffer that store
 | annealing_steps  | 100000  | How many steps of training to reduce startE to endE |
 | num_episodes  | 100000  | How many episodes of game environment to train network with |
 | max_epLength  | 200  | The max allowed length of our episode |
-| pre_train_steps  | 100000  | How many steps of random actions before training begins |
+| pre_train_steps  | 10000  | How many steps of random actions before training begins |
 | h_size  | 1296*2  | The size of the final convolutional layer before splitting it into Advantage and Value streams |
 | tau  | 0.001  | Rate to update target network toward primary network |
 
 # Multi Snake Experiment Result
-Still Traning
+annealing_steps : 100000
+num_episodes : 100000
+pre_train_steps : 100000
+<img src="image/play_1.gif" width="800">
+
+Still Traning with another paramter
