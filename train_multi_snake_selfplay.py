@@ -1,18 +1,10 @@
 # train a single snake agent using the baseline PPO algorithm
-
 import sys
-from baselines import logger
-# from baselines.ppo2 import ppo2
-from ppo import ppo2
+
 import tensorflow as tf
 import gym
-from baselines.a2c.utils import fc, conv, conv_to_fc
-from baselines.common.distributions import make_pdtype
-# from baselines.common.vec_env.dummy_vec_env import DummyVecEnv
-# from baselines.common.vec_env.vec_normalize import VecNormalize
-from baselines import bench, logger
+
 from multi_snake import MultiSnake
-from handle_args import handle_args
 
 import numpy as np
 import subprocess as sp
@@ -23,67 +15,6 @@ import re
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
 import random
-
-# set environment variable to free gpu device
-out = sp.check_output('./free_gpus.sh').split()[0]
-if isinstance(out, bytes):
-    out = out.decode()
-
-os.environ["CUDA_VISIBLE_DEVICES"] = out
-
-save_int = 1000
-trainhistdir = 'train_multi_snake_selfplay/'
-save_gif = False
-test_model = True
-statlist = []
-stat = np.array([])
-reloadlist = []
-numepisodes = 0
-lastnumepisodes = 0
-maxepisodes = int(6e5)
-max_episodes_timestep = 1000
-tol_frac = .9
-gamma = .9
-lam = 1.0
-buf_size = 2048
-minibatch_size = 32
-nminibatches = buf_size // minibatch_size
-
-num_agents = 2
-best_avg_reward = -1 * num_agents
-min_reward = -1 * num_agents
-
-giffn = trainhistdir + 'video.gif'
-
-# handle command line arguments
-test_model, save_gif = handle_args(test_model, save_gif)
-
-if save_gif:
-    maxepisodes = 3
-
-
-def load_from_file(param_pkl_path):
-    with open(param_pkl_path, 'rb') as f:
-        params = pickle.load(f)
-    return params
-
-
-def findlastepisode(traindir):
-    # list directory contents
-    errstatfiles = os.listdir(traindir)
-    
-    # find files in directory that look like reward statistics files and extract their numbers
-    errstatnumbers = []
-    for x in errstatfiles:
-        matchobj = re.match(r'(?:Reward_stat_)(\d+)(?:\.npz)',x)
-        if matchobj is not None:
-            errstatnumbers.append(int(matchobj.group(1)))
-        
-    # find highest number
-    lastfilenumber = np.array(errstatnumbers).max().astype(int)
-    
-    return lastfilenumber    
-
 
 class Qnetwork():
     def __init__(self, h_size):
@@ -125,7 +56,7 @@ class Qnetwork():
 
 
 class experience_buffer():
-    def __init__(self, buffer_size = 250000):
+    def __init__(self, buffer_size = 500000):
         self.buffer = []
         self.buffer_size = buffer_size
     
@@ -156,26 +87,20 @@ update_freq = 4 #How often to perform a training step.
 y = .99 #Discount factor on the target Q-values
 startE = 1 #Starting chance of random action
 endE = 0.1 #Final chance of random action
-annealing_steps = 50000. #How many steps of training to reduce startE to endE.
-num_episodes = 50000 #How many episodes of game environment to train network with.
-pre_train_steps = 5000 #How many steps of random actions before training begins.
-max_epLength = 100 #The max allowed length of our episode.
+annealing_steps = 100000. #How many steps of training to reduce startE to endE.
+num_episodes = 100000 #How many episodes of game environment to train network with.
+pre_train_steps = 100000 #How many steps of random actions before training begins.
+max_epLength = 200 #The max allowed length of our episode.
 load_model = False #Whether to load a saved model.
 path = "./dqn" #The path to save our model to.
 h_size = 1296*2 #The size of the final convolutional layer before splitting it into Advantage and Value streams.
 tau = 0.001 #Rate to update target network toward primary network
 
-    
 def main():
-    # disable logging during testing
-    if test_model:
-        log_interval = int(1e20)
-    else:
-        log_interval = 1
-    
     spacing = 22
     grid_dim = 15
     history = 4
+    save_gif = False
     env = MultiSnake(num_agents=2, num_fruits=3, spacing=spacing, grid_dim=grid_dim, flatten_states=False,
                      reward_killed=-1.0, history=history, save_gif=save_gif)
     env.reset()
