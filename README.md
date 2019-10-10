@@ -1,4 +1,4 @@
-![Slither.io Game Play](https://github.com/kimbring2/MineRL/blob/master/monitor/slitherio.gif)
+![Slither.io Game Play](https://github.com/kimbring2/OpenAI_Requests-For-Research-2_Slitherin/image/slitherio.gif)
 
 # OpenAI_Requests-For-Research-2_Slitherin
 Research for improving self-play instability
