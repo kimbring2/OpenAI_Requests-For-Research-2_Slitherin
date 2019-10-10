@@ -1,6 +1,6 @@
+# OpenAI_Requests-For-Research-2_Slitherin
 ![Slither.io Game Play](https://github.com/kimbring2/OpenAI_Requests-For-Research-2_Slitherin/blob/master/image/slitherio.gif)
 
-# OpenAI_Requests-For-Research-2_Slitherin
 Research for improving self-play instability
 
 # Research Introduction
