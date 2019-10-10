@@ -24,6 +24,7 @@ https://twitter.com/kimbring2/status/963671596610326528
 # Reference
 In this research, there was no given code for environment and algorithm, so I need to create and find a multi-agent snake game and self-play algorithm. Many excellent other researchers have published environment and algorithm on github, so I can use them as a reference to conduct research presented by OpenAI.
 
+https://github.com/yenchenlin/DeepLearningFlappyBird - Single DQN 
 https://github.com/bhairavmehta95/slitherin-gym - Multi Snake Env  
 https://github.com/ingkanit/multi-snake-RL - PPO2 for Multi Snake playing 
 https://web.stanford.edu/~surag/posts/alphazero.html - Self Play Algorithm
@@ -36,6 +37,22 @@ The experiment first targeted two snakes. The height and width of env is 15x15. 
 The DQN network uses a structure like Double-Dueling-DQN (https://github.com/awjuliani/DeepRL-Agents/blob/master/Double-Dueling-DQN.ipynb) raised by Arthur Juliani. The CNN kernel size and the number of filters were slightly adjusted and the rest were used as is.
 
 In order to apply the Self-Play algorithm to DQN, I create two buffer that store agent trajectory, which is different from the single agent DQN. If two snakes die while recording all the state, action, reward, and done information of two snakes from the episode, train the network with the data of the remaining snake until the end. And the number of episode limit steps In the case of ending beyond, I just select one at randomly among two buffer.
+
+| Network Parameter | Value | Details |
+| ------------- | ------------- | ------------- |
+| CNN Policy Layer 1  | num_outputs=16, kernel_size=[3,3], stride=[1,1] |
+| CNN Policy Layer 1  | num_outputs=32, kernel_size=[3,3], stride=[1,1] |
+| CNN Policy Layer 1  | num_outputs=32, kernel_size=[3,3], stride=[1,1] |
+| batch_size  | 512 | How many experiences to use for each training step |
+| update_freq  | 4  | How often to perform a training step |
+| startE  | 1  | Starting chance of random action |
+| endE  | 0.1  | Final chance of random action |
+| annealing_steps  | 100000  | How many steps of training to reduce startE to endE |
+| num_episodes  | 100000  | How many episodes of game environment to train network with |
+| max_epLength  | 200  | The max allowed length of our episode |
+| pre_train_steps  | 100000  | How many steps of random actions before training begins |
+| h_size  | 1296*2  | The size of the final convolutional layer before splitting it into Advantage and Value streams |
+| tau  | 0.001  | Rate to update target network toward primary network |
 
 # Multi Snake Experiment Result
 Still Traning
