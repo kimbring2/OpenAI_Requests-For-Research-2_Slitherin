@@ -31,9 +31,12 @@ In this research, there was no given code for environment and algorithm, so I ne
 
 Once again, thanks for these researchers.
 
-# Experiment Setting
-The experiment first targeted two snakes. The height and width of env is 15x15. In addition to the current state, the previous three states can be used together, so that in addition to the snake position information, direction information can be grasped together by a network. Each snake can move up, down, right, left, and put 3 fruits that can earn 1 reward upon acquisition for each episode. Here snakes must compete with each other and get the maximum reward without crossing to the edge.
+# Environment Setting
+The experiment first target two snakes situation. The height and width of state of env is 15x15 and each snake have egocentric view which shows 2 for itself and 3 for other snake. And -1 is given for dead snake and 1 is given for fruit. In addition to the current state, the previous three states can be used together, so that in addition to the snake position information, direction information can be grasped together by a network without RNN network. Each snake can move up, down, right, left for getting fruit which gives 1 reward and avoiding wall hitting which gives -1 reward. Here snakes must compete with each other and get the maximum reward. 
 
+For summary, there are two states and two actions for each steps if there is two snake and state is divied by 3 for normalization.
+
+# Policy Network
 The DQN network uses a structure like Double-Dueling-DQN (https://github.com/awjuliani/DeepRL-Agents/blob/master/Double-Dueling-DQN.ipynb) raised by Arthur Juliani. The CNN kernel size and the number of filters were slightly adjusted and the rest were used as is.
 
 | Network Structure | Value |
@@ -49,7 +52,11 @@ The DQN network uses a structure like Double-Dueling-DQN (https://github.com/awj
 | TD Error | Target Q - Current Q |
 | Loss | Reduce mean of TD Error |
 
+# Self Play algorithm
+
 In order to apply the Self-Play algorithm to DQN, I create two buffer that store agent trajectory, which is different from the single agent DQN. If two snakes die while recording all the state, action, reward, and done information of two snakes from the episode, train the network with the data of the remaining snake until the end. And the number of episode limit steps In the case of ending beyond, I just select one at randomly among two buffer.
+
+# Network learning parameter
 
 | Traning Parameter | Value | Details |
 | ------------- | ------------- | ------------- |
