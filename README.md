@@ -70,4 +70,5 @@ In order to apply the Self-Play algorithm to DQN, I create two buffer that store
 | ------------- | ------------- |
 | annealing_steps : 100000, num_episodes : 100000, pre_train_steps : 10000, startE : 0.1, endE : 0.0001 | <img src="image/play_2.gif" width="300"> |
 | annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_3.gif" width="300">  |
+| annealing_steps : 5000000, num_episodes : 5000000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_4.gif" width="300">  |
 
