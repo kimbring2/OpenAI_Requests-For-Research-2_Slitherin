@@ -68,7 +68,7 @@ In order to apply the Self-Play algorithm to DQN, I create two buffer that store
 # Single Snake Experiment Result
 | Paramter | Result video |
 | ------------- | ------------- |
-| annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | |
+| annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_0.gif" width="300"> |
 
 
 # Multi Snake Experiment Result
