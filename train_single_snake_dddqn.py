@@ -4,7 +4,7 @@ import sys
 import tensorflow as tf
 import gym
 
-from multi_snake_1 import MultiSnake
+from multi_snake import MultiSnake
 
 import numpy as np
 import subprocess as sp
