@@ -91,4 +91,4 @@ Next, using the same conditions and policy algorithm as single snake, I increase
 | annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_3.gif" width="300">  |
 | annealing_steps : 5000000, num_episodes : 5000000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_4.gif" width="300">  |
 
-Even if I train for a sufficient amount of time when appling the Self-Play method so that you can see the result video, you can see that you can't avoid the wall properly. Considering that agent has to first learn to avoid the walls before stage of getting the fruit, traning is going nothing well.
+Even if I train for a sufficient amount of time when applying the Self-Play method, you can see that agent can't avoid the wall properly. Considering that agent has to first learn to avoid the walls before stage of getting the fruit, traning is not going well.
