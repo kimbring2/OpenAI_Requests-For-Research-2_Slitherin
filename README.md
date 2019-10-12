@@ -56,7 +56,8 @@ The DQN network uses a structure like Double-Dueling-DQN (https://github.com/awj
 
 In order to apply the Self-Play algorithm to DQN, I create two buffer that store agent trajectory, which is different from the single agent DQN. If two snakes die while recording all the state, action, reward, and done information of two snakes from the episode, train the network with the data of the remaining snake until the end. And the number of episode limit steps In the case of ending beyond, I just select one at randomly among two buffer.
 
-# Network learning parameter
+# Network traning parameter
+Because DQN is a basic model, I experiment by changing parameters related to Q-Learning and parameters related to Neural Networks.
 
 | Traning Parameter | Value | Details |
 | ------------- | ------------- | ------------- |
