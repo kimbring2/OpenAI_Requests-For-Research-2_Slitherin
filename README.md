@@ -66,7 +66,7 @@ In order to apply the Self-Play algorithm to DQN, I create two buffer that store
 | tau  | 0.001  | Rate to update target network toward primary network |
 
 # Single Snake Experiment Result
-First, let's check that trarning progresses properly when using the same environment and algorithm with a single snake. After downloding code, run train_single_snake_dddqn.py --train for traning and run train_single_snake_dddqn.py --savegif for evaluating the performance of the model. This part is not fully automated, so you need to understand the basic code structure. 
+First, let's check that trarning progresses properly when using the same environment and algorithm with a single snake. After downloding code, run train_single_snake_dddqn.py --train for traning and run train_single_snake_dddqn.py --savegif for evaluating the performance of the model. This part is not fully automated yet, so you need to understand the basic code structure for switching between traning and testing.
 
 | Paramter | Result video |
 | ------------- | ------------- |
