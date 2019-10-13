@@ -79,19 +79,14 @@ First, let's check that trarning progresses properly when using the same environ
 | ------------- | ------------- |
 | annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_0.gif" width="300"> |
 
-When there is only one snake, it is confirmed that the length is increased while acquiring fruit normally without hitting wall after traning  around 1hour.
+When there is only one snake, it is confirmed that the length is increased while acquiring fruit normally without hitting wall after traning  around 1 hour.
 
-<?xml version="1.0" encoding="utf-8"?>
-<svg version="1.1" 
-     xmlns="http://www.w3.org/2000/svg"
-     xmlns:xlink="http://www.w3.org/1999/xlink"
-     width="100" height="50"
->
-  <text font-size="16" x="10" y="20">
-    <tspan fill="red">Hello</tspan>,
-    <tspan fill="green">world</tspan>!
-  </text>
-</svg>
+```diff
+- text in red
++ text in green
+! text in orange
+# text in gray
+```
 
 # Multi Snake Experiment Result
 Next, using the same conditions and policy algorithm as single snake, I increase the number of snakes to two, apply self-play, and conduct experiments to confirm whether traning goes well.
