@@ -82,10 +82,9 @@ First, let's check that trarning progresses properly when using the same environ
 When there is only one snake, it is confirmed that the length is increased while acquiring fruit normally without hitting wall after traning  around 1 hour.
 
 ```diff
-- text in red
-+ text in green
-! text in orange
-# text in gray
+- It is confirmed that there is a problem that the positions of states two snake is reversed in the uploaded environment. In order to solve this problem, the state value is stored in reverse as follows.
++ s1_agent1 = s1[1]
++ s1_agent2 = s1[0]
 ```
 
 # Multi Snake Experiment Result
