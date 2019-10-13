@@ -53,7 +53,6 @@ The DQN network uses a structure like Double-Dueling-DQN (https://github.com/awj
 | Loss | Reduce mean of TD Error |
 
 # Self Play algorithm
-
 In order to apply the Self-Play algorithm to DQN, I create two buffer that store agent trajectory, which is different from the single agent DQN. If two snakes die while recording all the state, action, reward, and done information of two snakes from the episode, train the network with the data of the remaining snake until the end. And the number of episode limit steps In the case of ending beyond, I just select one at randomly among two buffer.
 
 # Network traning parameter
@@ -82,7 +81,16 @@ First, let's check that trarning progresses properly when using the same environ
 
 When there is only one snake, it is confirmed that the length is increased while acquiring fruit normally without hitting wall after traning  around 1hour.
 
-<p class="callout danger">A success message</p>
+<div class="alert alert-danger" role="alert">
+    <div class="row vertical-align">
+        <div class="col-xs-1 text-center">
+            <i class="fa fa-exclamation-triangle fa-2x"></i>
+        </div>
+        <div class="col-xs-11">
+                <strong>Error:</strong>                   
+        </div>   
+    </div> 
+</div>
 
 # Multi Snake Experiment Result
 Next, using the same conditions and policy algorithm as single snake, I increase the number of snakes to two, apply self-play, and conduct experiments to confirm whether traning goes well.
