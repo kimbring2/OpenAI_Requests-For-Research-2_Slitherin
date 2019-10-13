@@ -81,6 +81,8 @@ First, let's check that trarning progresses properly when using the same environ
 
 When there is only one snake, it is confirmed that the length is increased while acquiring fruit normally without hitting wall after traning  around 1 hour.
 
+# Multi Snake Experiment Bug
+
 ```diff
 - There is a problem that a states of two snake is saved reversly at the uploaded environment. 
 - In order to solve this problem, the state value is stored in reverse as follows.
