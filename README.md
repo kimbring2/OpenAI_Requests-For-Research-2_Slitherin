@@ -82,6 +82,8 @@ First, let's check that trarning progresses properly when using the same environ
 
 When there is only one snake, it is confirmed that the length is increased while acquiring fruit normally without hitting wall after traning  around 1hour.
 
+<p class="callout danger">A success message</p>
+
 # Multi Snake Experiment Result
 Next, using the same conditions and policy algorithm as single snake, I increase the number of snakes to two, apply self-play, and conduct experiments to confirm whether traning goes well.
 
