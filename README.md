@@ -85,7 +85,9 @@ First, let's check that trarning progresses properly when using the same environ
 | ------------- | ------------- |
 | annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_0.gif" width="300"> |
 
-When there is only one snake, it is confirmed that the length is increased while acquiring fruit normally without hitting wall after traning  around 1 hour.
+When there is only one snake, it is confirmed that the length is increased while acquiring fruit normally without hitting wall after traning around 1 hour.
+
+Traning Weight file : https://drive.google.com/drive/folders/16sRAHFM9ka3pBAo53YP991rQ_ChfTtX2?usp=sharing
 
 # Multi Snake Experiment Bug
 
