@@ -4,7 +4,9 @@
 Research for improving Self-Play instability
 
 ```diff
-- In the case of a game like Slither.io, one snake will die if it collides with another snake, but the environment currently being tested does not include that part. I need a time for adding this part.
+- In the case of a game like Slither.io, one snake will die if it collides with another snake.
+- But the environment currently being tested does not include that part. 
+- I need a time for adding this part.
 ```
 
 # Requirements
