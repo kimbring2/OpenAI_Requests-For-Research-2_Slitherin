@@ -55,6 +55,12 @@ The DQN network uses a structure like Double-Dueling-DQN (https://github.com/awj
 # Self Play algorithm
 In order to apply the Self-Play algorithm to DQN, I create two buffer that store agent trajectory, which is different from the single agent DQN. If two snakes die while recording all the state, action, reward, and done information of two snakes from the episode, train the network with the data of the remaining snake until the end. And the number of episode limit steps In the case of ending beyond, I just select one at randomly among two buffer.
 
+## Without Pretrain
+The first way to train an agent is to use Self-Play from the beginning, but here the agent learns from the beginning to get fruit while avoiding the wall and competing with the other agent. 
+
+## With Pretrain
+The second method of trarning an agent is to learn a method of acquiring a fruit while avoiding a wall from a single snake, and then self-play using the policy learned earlier. is there.
+
 # Network traning parameter
 Because DQN is a basic model, I experiment by changing parameters related to Q-Learning and parameters related to Neural Networks.
 
