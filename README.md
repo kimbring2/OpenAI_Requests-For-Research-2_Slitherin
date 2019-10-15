@@ -3,6 +3,10 @@
 
 Research for improving Self-Play instability
 
+# Requirements
+Trarning is done using tensorflow-gpu == 1.13.1, and the environment only needs to import the uploaded multi_snake.py.
+
+# Environment Update
 ```diff
 - In the case of a game like Slither.io, one snake will die if it collides with another snake.
 - But the environment currently being tested does not include that part. 
@@ -14,9 +18,6 @@ Research for improving Self-Play instability
 ```diff
 + multi_snake_1.py environment : Fix a history buffer issue 
 ```
-
-# Requirements
-Trarning is done using tensorflow-gpu == 1.13.1, and the environment only needs to import the uploaded multi_snake.py.
 
 # Research Introduction
 The uploaded code is the first of the seven research requirements submitted from https://openai.com/blog/requests-for-research-2/.
