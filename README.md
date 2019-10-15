@@ -4,11 +4,12 @@
 Research for improving Self-Play instability
 
 ```diff
-~
 - In the case of a game like Slither.io, one snake will die if it collides with another snake.
 - But the environment currently being tested does not include that part. 
 - I need a time for adding this part.
-~
+
++ Added at multi_snake_2.py environment
++ multi_snake_1.py environment : Fix issue with history buffer problem 
 ```
 
 # Requirements
