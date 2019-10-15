@@ -9,7 +9,7 @@ Research for improving Self-Play instability
 - I need a time for adding this part.
 
 + Added at multi_snake_2.py environment
-+ multi_snake_1.py environment : Fix issue with history buffer problem 
++ multi_snake_1.py environment : Fix a history buffer issue 
 ```
 
 # Requirements
