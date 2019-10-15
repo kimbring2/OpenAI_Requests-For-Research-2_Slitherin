@@ -8,15 +8,17 @@ Trarning is done using tensorflow-gpu == 1.13.1, and the environment only needs 
 
 # Environment Update
 ```diff
-- In the case of a game like Slither.io, one snake will die if it collides with another snake.
-- But the environment currently being tested does not include that part. 
-- I need a time for adding this part.
+- multi_snake.py environment has a problem that occurs when 1 snake dies.
+- In such a case, dead snake state is mixed with history buffer of the remaining snake.
 
-+ Added at multi_snake_2.py environment
++ Fixed at multi_snake_1.py environment
 ```
 
 ```diff
-+ multi_snake_1.py environment : Fix a history buffer issue 
+- In the case of Slither.io, one snake will die if it collides with another snake.
+- But multi_snake_1.py does not include that kind of part. 
+
++ Fixed at multi_snake_2.py environment
 ```
 
 # Research Introduction
