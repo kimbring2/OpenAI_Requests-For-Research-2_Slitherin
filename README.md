@@ -110,13 +110,12 @@ Traning Weight file : https://drive.google.com/drive/folders/16sRAHFM9ka3pBAo53Y
 # Multi Snake Experiment Result
 Next, using the same conditions and policy algorithm as single snake, I increase the number of snakes to two and apply self-play.
 
-
 ## Without Pretrain
 | Paramter | Result video |
 | ------------- | ------------- |
 | annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_4.gif" width="300"> |
 
-Even if I train for a sufficient amount of time when applying the Self-Play method, you can see that agent can't avoid the wall properly. Considering that agent has to first learn to avoid the walls before stage of getting the fruit, traning is not going well.
+After trarning for a certain period of time, the agent seems to avoid the wall and acquire fruit to some extent, but it seems that snake has not yet seen any action that interferes with the expected movement of the other snake.
 
 ## With Pretrain
 | Paramter | Result video |
