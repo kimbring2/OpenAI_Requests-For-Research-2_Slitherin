@@ -21,6 +21,12 @@ Trarning is done using tensorflow-gpu == 1.13.1, and the environment only needs 
 + Fixed at multi_snake_2.py environment
 ```
 
+```diff
+- There is a problem that a states of two snake is saved reversly.
+- In order to solve this problem, the state value should be stored in reversly.
++ s1_agent1 = s1[1], s1_agent2 = s1[0]
+```
+
 # Research Introduction
 The uploaded code is the first of the seven research requirements submitted from https://openai.com/blog/requests-for-research-2/.
 
@@ -103,15 +109,6 @@ First, let's check that trarning progresses properly when using the same environ
 When there is only one snake, it is confirmed that the length is increased while acquiring fruit normally without hitting wall after traning around 1 hour.
 
 Traning Weight file : https://drive.google.com/drive/folders/16sRAHFM9ka3pBAo53YP991rQ_ChfTtX2?usp=sharing
-
-# Multi Snake Experiment Bug
-
-```diff
-- There is a problem that a states of two snake is saved reversly at the uploaded environment. 
-- In order to solve this problem, the state value is stored in reverse as follows.
-+ s1_agent1 = s1[1]
-+ s1_agent2 = s1[0]
-```
 
 # Multi Snake Experiment Result
 Next, using the same conditions and policy algorithm as single snake, I increase the number of snakes to two and apply self-play.
