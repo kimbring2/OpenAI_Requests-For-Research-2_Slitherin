@@ -24,6 +24,7 @@ Trarning is done using tensorflow-gpu == 1.13.1, and the environment only needs 
 ```diff
 - There is a problem that a states of two snake is saved reversly.
 - In order to solve this problem, the state value should be stored in reversly.
+
 + s1_agent1 = s1[1], s1_agent2 = s1[0]
 ```
 
