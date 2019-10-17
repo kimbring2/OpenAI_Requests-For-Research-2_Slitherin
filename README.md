@@ -83,6 +83,9 @@ The first way to train an agent is to use Self-Play from the beginning, but here
 ## With Pretrain
 The second method of training an agent is to learn a method of acquiring a fruit while avoiding a wall from a single snake, and then self-play using the policy learned earlier. is there.
 
+## Using a distribution of past policies
+The previous two methods are generally the methods that can be considered most simply. The third method, suggested by OpenAI, is a way for people to train the current policy about the distribution of previous policies, similar to the method people use to resolve GAN instability.
+
 # Network traning parameter
 Because DQN is a basic model, I experiment by changing parameters related to Q-Learning and parameters related to Neural Networks.
 
