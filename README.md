@@ -109,7 +109,7 @@ First, let's check that trarning progresses properly when using the same environ
 
 When there is only one snake, it is confirmed that the length is increased while acquiring fruit normally without hitting wall after traning around 1 hour.
 
-Traning Weight file : https://drive.google.com/drive/folders/16sRAHFM9ka3pBAo53YP991rQ_ChfTtX2?usp=sharing
+Pretrain weight file : https://drive.google.com/drive/folders/16sRAHFM9ka3pBAo53YP991rQ_ChfTtX2?usp=sharing
 
 # Multi Snake Experiment Result
 Next, using the same conditions and policy algorithm as single snake, I increase the number of snakes to two and apply self-play.
@@ -123,6 +123,8 @@ Next, using the same conditions and policy algorithm as single snake, I increase
 After trarning for a certain period of time, the agent seems to avoid the wall and acquire fruit to some extent, but it seems that snake has not yet shown any action which interrupting movement of the other snake. 
 
 Experiments with changing parameters confirm that there is no additional improvement. So, I decide to train the skill of collecting fruits and avoiding walls in a single snake environment, and decide to use Self-Play here.
+
+Pretrain weight file : https://drive.google.com/drive/folders/1RQPwfTVvAlwlKEzQvIdpHUb4I1DchYaP?usp=sharing
 
 ## With Pretrain
 | Paramter | Result video |
