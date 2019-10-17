@@ -120,7 +120,9 @@ Next, using the same conditions and policy algorithm as single snake, I increase
 | annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_4.gif" width="300"> |
 | annealing_steps : 5000000, num_episodes : 5000000, pre_train_steps : 500000, startE : 0.1, endE : 0.0001 | <img src="image/play_5.gif" width="300"> |
 
-After trarning for a certain period of time, the agent seems to avoid the wall and acquire fruit to some extent, but it seems that snake has not yet shown any action which interrupting movement of the other snake.
+After trarning for a certain period of time, the agent seems to avoid the wall and acquire fruit to some extent, but it seems that snake has not yet shown any action which interrupting movement of the other snake. 
+
+Experiments with changing parameters confirm that there is no additional improvement. So, I decide to train the skill of collecting fruits and avoiding walls in a single snake environment, and decide to use Self-Play here.
 
 ## With Pretrain
 | Paramter | Result video |
