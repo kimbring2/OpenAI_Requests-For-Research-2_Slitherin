@@ -120,7 +120,7 @@ Next, using the same conditions and policy algorithm as single snake, I increase
 | annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_4.gif" width="300"> |
 | annealing_steps : 5000000, num_episodes : 5000000, pre_train_steps : 500000, startE : 0.1, endE : 0.0001 | <img src="image/play_5.gif" width="300"> |
 
-After trarning for a certain period of time, the agent seems to avoid the wall and acquire fruit to some extent, but it seems that snake has not yet seen any action that interferes with the expected movement of the other snake.
+After trarning for a certain period of time, the agent seems to avoid the wall and acquire fruit to some extent, but it seems that snake has not yet shown any action which interrupting movement of the other snake.
 
 ## With Pretrain
 | Paramter | Result video |
