@@ -134,4 +134,4 @@ Weight file : https://drive.google.com/drive/folders/1RQPwfTVvAlwlKEzQvIdpHUb4I1
 | ------------- | ------------- |
 | annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_10.gif" width="300"> |
 
-In the case of Self-Play using a pretrained model in a single snake environment, the reward tended to decrease as training progressed. In view of these results, the method is judged to have some problems.
+In the case of Self-Play using a pretrained model in a single snake environment, the reward tended to decrease as training progressed. In view of these results, the method is judged to have some problems. In particular, it is observed that the phenomenon that the blue snake collides with the wall from the beginning of the episode frequently occurs.
