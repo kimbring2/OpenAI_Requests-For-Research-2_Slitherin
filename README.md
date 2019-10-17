@@ -4,7 +4,7 @@
 Research for improving Self-Play instability
 
 # Requirements
-Trarning is done using tensorflow-gpu == 1.13.1, and the environment only needs to import the uploaded multi_snake_2.py.
+Training is done using tensorflow-gpu == 1.13.1, and the environment only needs to import the uploaded multi_snake_2.py.
 
 # Environment Update
 ```diff
@@ -81,7 +81,7 @@ In order to apply the Self-Play algorithm to DQN, I create two buffer that store
 The first way to train an agent is to use Self-Play from the beginning, but here the agent learns from the beginning to get fruit while avoiding the wall and competing with the other agent. 
 
 ## With Pretrain
-The second method of trarning an agent is to learn a method of acquiring a fruit while avoiding a wall from a single snake, and then self-play using the policy learned earlier. is there.
+The second method of training an agent is to learn a method of acquiring a fruit while avoiding a wall from a single snake, and then self-play using the policy learned earlier. is there.
 
 # Network traning parameter
 Because DQN is a basic model, I experiment by changing parameters related to Q-Learning and parameters related to Neural Networks.
@@ -101,13 +101,13 @@ Because DQN is a basic model, I experiment by changing parameters related to Q-L
 | tau  | 0.001  | Rate to update target network toward primary network |
 
 # Single Snake Experiment Result
-First, let's check that trarning progresses properly when using the same environment and algorithm with a single snake. After downloding code, run train_single_snake_dddqn.py --train for traning and run train_single_snake_dddqn.py --savegif for evaluating the performance of the model. This part is not fully automated yet, so you need to understand the basic code structure for switching between traning and testing.
+First, let's check that training progresses properly when using the same environment and algorithm with a single snake. After downloding code, run train_single_snake_dddqn.py --train for traning and run train_single_snake_dddqn.py --savegif for evaluating the performance of the model. This part is not fully automated yet, so you need to understand the basic code structure for switching between training and testing.
 
 | Paramter | Result video |
 | ------------- | ------------- |
 | annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_0.gif" width="300"> |
 
-When there is only one snake, it is confirmed that the length is increased while acquiring fruit normally without hitting wall after traning around 1 hour.
+When there is only one snake, it is confirmed that the length is increased while acquiring fruit normally without hitting wall after training around 1 hour.
 
 Weight file : https://drive.google.com/drive/folders/16sRAHFM9ka3pBAo53YP991rQ_ChfTtX2?usp=sharing
 
@@ -123,7 +123,7 @@ Next, using the same conditions and policy algorithm as single snake, I increase
 | annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_4.gif" width="300"> |
 | annealing_steps : 5000000, num_episodes : 5000000, pre_train_steps : 500000, startE : 0.1, endE : 0.0001 | <img src="image/play_5.gif" width="300"> |
 
-After trarning for a certain period of time, the agent seems to avoid the wall and acquire fruit to some extent, but it seems that snake has not yet shown any action which interrupting movement of the other snake. 
+After training for a certain period of time, the agent seems to avoid the wall and acquire fruit to some extent, but it seems that snake has not yet shown any action which interrupting movement of the other snake. 
 
 Experiments with changing parameters confirm that there is no additional improvement. So, I decide to train the skill of collecting fruits and avoiding walls in a single snake environment and use Self-Play after that.
 
@@ -132,4 +132,6 @@ Weight file : https://drive.google.com/drive/folders/1RQPwfTVvAlwlKEzQvIdpHUb4I1
 ## With Pretrain
 | Paramter | Result video |
 | ------------- | ------------- |
-| annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | |
+| annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_10.gif" width="300"> |
+
+In the case of Self-Play using a pretrained model in a single snake environment, the reward tended to decrease as training progressed. In view of these results, the method is judged to have some problems.
