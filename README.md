@@ -114,6 +114,9 @@ Weight file : https://drive.google.com/drive/folders/16sRAHFM9ka3pBAo53YP991rQ_C
 # Multi Snake Experiment Result
 Next, using the same conditions and policy algorithm as single snake, I increase the number of snakes to two and apply self-play.
 
+- Traning : train_multi_snake_selfplay.py --train 
+- Evaluating : train_multi_snake_selfplay.py --savegif
+
 ## Without Pretrain
 | Paramter | Result video |
 | ------------- | ------------- |
