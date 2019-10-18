@@ -54,12 +54,12 @@ In this research, there was no given code for environment and algorithm, so I ne
 Once again, thanks for these researchers.
 
 # Environment Setting
-The experiment first target two snakes situation. The height and width of state of env is 15x15 and each snake have egocentric view which shows 2 for itself and 3 for other snake. And -1 is given for dead snake and 1 is given for fruit. In addition to the current state, the previous three states can be used together, so that in addition to the snake position information, direction information can be grasped together by a network without RNN network. Each snake can move up, down, right, left for getting fruit which gives 1 reward and avoiding wall hitting which gives -1 reward. Here snakes must compete with each other and get the maximum reward. 
+The experiment first purpose is solving two snakes environment. The height and width of state of environment is two dimensional array which have a shape of 15x15 and each snake have egocentric view which gives 2 for body of itself and 3 for head of itself. Body and head of other snake gets 4, 5 in turn. And -1 is given for dead snake and 1 is given for fruit. In addition to the current state, the previous three states can be used together, so that in addition to the snake position information, direction information can be grasped together by a network without RNN network. Each snake can move up, down, right, left for getting fruit which gives 1 reward and avoiding wall hitting which gives -1 reward. Here snakes must compete with each other and get the maximum reward. 
 
 For summary, there are two states and two actions for each steps if there is two snake and state is divied by 3 for normalization.
 
 # Policy Network
-The DQN network uses a structure like Double-Dueling-DQN (https://github.com/awjuliani/DeepRL-Agents/blob/master/Double-Dueling-DQN.ipynb) raised by Arthur Juliani. The CNN kernel size and the number of filters were slightly adjusted and the rest were used as is.
+I use a policy network uses a structure like a Double-Dueling-DQN (https://github.com/awjuliani/DeepRL-Agents/blob/master/Double-Dueling-DQN.ipynb) raised by Arthur Juliani. The CNN kernel size and the number of filters were slightly adjusted and the rest were used as is.
 
 | Network Structure | Value |
 | ------------- | ------------- |
@@ -140,6 +140,6 @@ Weight file : https://drive.google.com/drive/folders/1RQPwfTVvAlwlKEzQvIdpHUb4I1
 In the case of Self-Play using a pretrained model in a single snake environment, the reward tended to decrease as training progressed. In view of these results, the method is judged to have some problems. In particular, it is observed that the phenomenon that the blue snake collides with the wall from the beginning of the episode frequently occurs.
 
 # Problem analysis
-In the test results so far, it seems impossible to solve the 2 snake environment with the DDQN algorithm, which is the most primitive method of applying the Self-Play algorithm. To solve the problem, we first need to explain why this method does not work by form of math formula.
+In the test results so far, it seems impossible to solve the 2 snake environment with the DDDQN algorithm, which is the most primitive method of applying the Self-Play algorithm. To solve the problem, we first need to explain why this method does not work by form of math formula.
 
 h<sub>&theta;</sub>(x) = &theta;<sub>o</sub> x + &theta;<sub>1</sub>x
