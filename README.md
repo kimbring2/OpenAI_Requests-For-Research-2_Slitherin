@@ -142,4 +142,4 @@ In the case of Self-Play using a pretrained model in a single snake environment,
 # Problem analysis
 In the test results so far, it seems impossible to solve the 2 snake environment with the DDDQN algorithm, which is the most primitive method of applying the Self-Play algorithm. To solve the problem, we first need to explain why this method does not work by form of math formula.
 
-Q(s,a) = r(s,a) + &gamma;Q(s,a)
+Q(s,a) = r(s,a) + &gamma;max<sub>a</sub>Q(s',a)
