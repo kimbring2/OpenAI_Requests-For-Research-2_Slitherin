@@ -54,7 +54,7 @@ In this research, there was no given code for environment and algorithm, so I ne
 Once again, thanks for these researchers.
 
 # Environment Setting
-The experiment first purpose is solving two snakes environment. The height and width of state of environment is two dimensional array which have a shape of 15x15 and each snake have egocentric view which gives 2 for body of itself and 3 for head of itself. Body and head of other snake gets 4, 5 in turn. And -1 is given for dead snake and 1 is given for fruit. In addition to the current state, the previous three states can be used together, so that in addition to the snake position information, direction information can be grasped together by a network without RNN network. Each snake can move up, down, right, left for getting fruit which gives 1 reward and avoiding wall hitting which gives -1 reward. Here snakes must compete with each other and get the maximum reward. 
+The experiment first purpose is solving two snakes environment. The height and width of state of environment is two dimensional array which have a shape of 15x15 and each snake have egcentric view which gives 2 for body of itself and 3 for head of itself. Body and head of other snake gets 4, 5 in turn. And -1 is given for dead snake and 1 is given for fruit. In addition to the current state, the previous three states can be used together, so that in addition to the snake position information, direction information can be grasped together by a network without RNN network. Each snake can move up, down, right, left for getting fruit which gives 1 reward and avoiding wall hitting which gives -1 reward. Here snakes must compete with each other and get the maximum reward. 
 
 For summary, there are two states and two actions for each steps if there is two snake and state is divied by 3 for normalization.
 
@@ -75,16 +75,7 @@ I use a policy network uses a structure like a Double-Dueling-DQN (https://githu
 | Loss | Reduce mean of TD Error |
 
 # Self Play algorithm
-In order to apply the Self-Play algorithm to DQN, I create two buffer that store agent trajectory, which is different from the single agent DQN. If two snakes die while recording all the state, action, reward, and done information of two snakes from the episode, train the network with the data of the remaining snake until the end. And the number of episode limit steps In the case of ending beyond, I just select one at randomly among two buffer.
-
-## Without Pretrain
-The first way to train an agent is to use Self-Play from the beginning, but here the agent learns from the beginning to get fruit while avoiding the wall and competing with the other agent. 
-
-## With Pretrain
-The second method of training an agent is to learn a method of acquiring a fruit while avoiding a wall from a single snake, and then self-play using the policy learned earlier. is there.
-
-## Using a distribution of past policies
-The previous two methods are generally the methods that can be considered most simply. The third method, suggested by OpenAI, is a way for people to train the current policy about the distribution of previous policies, similar to the method people use to resolve GAN instability.
+In the Self-Play algorithm, two Q networks are created as in a commonly used method, and then a one network is set as a best performance model. The other network is trained while competing with the best performing network. If this network wins over a certain score over the best performance network, it replaces best network.
 
 # Network traning parameter
 Because DQN is a basic model, I experiment by changing parameters related to Q-Learning and parameters related to Neural Networks.
@@ -120,26 +111,6 @@ Next, using the same conditions and policy algorithm as single snake, I increase
 - Traning : python train_multi_snake_selfplay.py --train 
 - Evaluating : python train_multi_snake_selfplay.py --savegif
 
-## Without Pretrain
 | Paramter | Result video |
 | ------------- | ------------- |
 | annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_4.gif" width="300"> |
-| annealing_steps : 5000000, num_episodes : 5000000, pre_train_steps : 500000, startE : 0.1, endE : 0.0001 | <img src="image/play_5.gif" width="300"> |
-
-After training for a certain period of time, the agent seems to avoid the wall and acquire fruit to some extent, but it seems that snake has not yet shown any action which interrupting movement of the other snake. 
-
-Experiments with changing parameters confirm that there is no additional improvement. So, I decide to train the skill of collecting fruits and avoiding walls in a single snake environment and use Self-Play after that.
-
-Weight file : https://drive.google.com/drive/folders/1RQPwfTVvAlwlKEzQvIdpHUb4I1DchYaP?usp=sharing
-
-## With Pretrain
-| Paramter | Result video |
-| ------------- | ------------- |
-| annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_10.gif" width="300"> |
-
-In the case of Self-Play using a pretrained model in a single snake environment, the reward tended to decrease as training progressed. In view of these results, the method is judged to have some problems. In particular, it is observed that the phenomenon that the blue snake collides with the wall from the beginning of the episode frequently occurs.
-
-# Problem analysis
-In the test results so far, it seems impossible to solve the 2 snake environment with the DDDQN algorithm, which is the most primitive method of applying the Self-Play algorithm. To solve the problem, we first need to explain why this method does not work by form of math formula.
-
-Q(s,a) = r(s,a) + &gamma;max<sub>a</sub>Q(s',a)
