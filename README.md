@@ -6,28 +6,13 @@ Research for improving Self-Play instability
 # Requirements
 Training is done using tensorflow-gpu == 1.13.1, and the environment only needs to import the uploaded multi_snake_2.py.
 
-# Environment Update
-```diff
-- multi_snake.py environment has a problem that occurs when 1 snake dies.
-- In such a case, dead snake state is mixed with history buffer of the remaining snake.
+# Environment Issue
+There is a problem that a states of two snake is saved reversly. In order to solve this problem, the state value should be stored in reversly.
 
-+ Fixed at multi_snake_1.py environment
 ```
-
-```diff
-- In the case of Slither.io, one snake will die if it collides with another snake.
-- But multi_snake_1.py does not include that kind of part. 
-
-+ Fixed at multi_snake_2.py environment
+s1_agent1 = s1[1]
+s1_agent2 = s1[0]
 ```
-
-```diff
-- There is a problem that a states of two snake is saved reversly.
-- In order to solve this problem, the state value should be stored in reversly.
-
-+ s1_agent1 = s1[1], s1_agent2 = s1[0]
-```
-
 # Research Introduction
 The uploaded code is the first of the seven research requirements submitted from https://openai.com/blog/requests-for-research-2/.
 
