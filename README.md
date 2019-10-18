@@ -140,4 +140,6 @@ Weight file : https://drive.google.com/drive/folders/1RQPwfTVvAlwlKEzQvIdpHUb4I1
 In the case of Self-Play using a pretrained model in a single snake environment, the reward tended to decrease as training progressed. In view of these results, the method is judged to have some problems. In particular, it is observed that the phenomenon that the blue snake collides with the wall from the beginning of the episode frequently occurs.
 
 # Problem analysis
+In the test results so far, it seems impossible to solve the 2 snake environment with the DDQN algorithm, which is the most primitive method of applying the Self-Play algorithm. To solve the problem, we first need to explain why this method does not work by form of math formula.
+
 h<sub>&theta;</sub>(x) = &theta;<sub>o</sub> x + &theta;<sub>1</sub>x
