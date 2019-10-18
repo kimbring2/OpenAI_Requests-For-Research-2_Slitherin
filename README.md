@@ -59,10 +59,10 @@ I use a policy network uses a structure like a Double-Dueling-DQN (https://githu
 | TD Error | Target Q - Current Q |
 | Loss | Reduce mean of TD Error |
 
-# Self Play algorithm
+# Self-Play algorithm
 In the Self-Play algorithm, two Q networks are created as in a commonly used method, and then a one network is set as a best performance model. The other network is trained while competing with the best performing network. If this network wins over a certain score over the best performance network, it replaces best network.
 
-# Network traning parameter
+# DDDQN network parameter
 Because DQN is a basic model, I experiment by changing parameters related to Q-Learning and parameters related to Neural Networks.
 
 | Traning Parameter | Value | Details |
