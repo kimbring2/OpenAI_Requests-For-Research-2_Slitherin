@@ -17,7 +17,7 @@ import sys
 import tensorflow as tf
 import gym
 
-from multi_snake_2 import MultiSnake
+from multi_snake import MultiSnake
 
 import numpy as np
 import subprocess as sp
@@ -70,7 +70,7 @@ class Qnetwork():
 
 
 class experience_buffer():
-    def __init__(self, buffer_size=500000):
+    def __init__(self, buffer_size=50000):
         self.buffer = []
         self.buffer_size = buffer_size
     
@@ -101,9 +101,9 @@ update_freq = 4 # How often to perform a training step.
 y = .99 # Discount factor on the target Q-values
 startE = 0.1 # Starting chance of random action
 endE = 0.0001 # Final chance of random action
-annealing_steps = 500000. # How many steps of training to reduce startE to endE.
-num_episodes = 500000 # How many episodes of game environment to train network with.
-pre_train_steps = 10000 # How many steps of random actions before training begins.
+annealing_steps = 5000000. # How many steps of training to reduce startE to endE.
+num_episodes = 5000000 # How many episodes of game environment to train network with.
+pre_train_steps = 50000 # How many steps of random actions before training begins.
 max_epLength = 500 # The max allowed length of our episode.
 load_model = False # Whether to load a saved model.
 path = "./dqn_multi" # The path to save our model to.
@@ -128,19 +128,15 @@ def main():
     targetQN_old = Qnetwork(h_size=h_size, scope="target_old")
 
     init = tf.global_variables_initializer()
-    saver = tf.train.Saver()
 
     trainables = tf.trainable_variables()
     variables_new_restore = [v for v in trainables if v.name.split('/')[0] in ['main_new', 'target_new']]
     variables_old_restore = [v for v in trainables if v.name.split('/')[0] in ['main_old', 'target_old']]
 
     update_weights = [tf.assign(old, new) for (old, new) in zip(variables_old_restore, variables_new_restore)]
-
     saver_new_model = tf.train.Saver(variables_new_restore)
-    saver_old_model = tf.train.Saver(variables_old_restore)
 
     targetOps_new = updateTargetGraph(variables_new_restore, tau)
-    targetOps_old = updateTargetGraph(variables_old_restore, tau)
     myBuffer = experience_buffer()
 
     #Set the rate of random action decrease. 
@@ -149,8 +145,8 @@ def main():
 
     #create lists to contain total rewards and steps per episode
     jList = []
-    rList_agent1 = []
-    rList_agent2 = []
+    rList_agent_old = []
+    rList_agent_new = []
     total_steps = 0
 
     #Make a path for our model to be saved in.
@@ -162,7 +158,8 @@ def main():
         if load_model == True:
             print('Loading Model...')
             ckpt = tf.train.get_checkpoint_state(path)
-            saver.restore(sess,ckpt.model_checkpoint_path)
+            saver_new_model.restore(sess, ckpt.model_checkpoint_path)
+            sess.run(update_weights)
 
         for i in range(num_episodes):
             win_num = [0, 0]
@@ -173,16 +170,16 @@ def main():
                 #Reset environment and get first new observation
                 s = env.reset()
 
-                s_agent1 = s[1]
-                s_agent2 = s[0]
-                d_agent1 = False
-                d_agent2 = False
+                s_agent_old = s[1]
+                s_agent_new = s[0]
+                d_agent_old = False
+                d_agent_new = False
                 d = [False, False]
                 pre_d = [False, False]
                 win_index = None
 
-                rAll_agent1 = 0
-                rAll_agent2 = 0
+                rAll_agent_old = 0
+                rAll_agent_new = 0
                 j = 0
 
                 #The Q-Network
@@ -190,30 +187,30 @@ def main():
                     #env.render()
                     j += 1
 
-                    a_agent1 = sess.run(mainQN_old.predict, feed_dict = {mainQN_old.imageIn:[s_agent1 / 3.0]})[0]
-                    a_agent2 = sess.run(mainQN_new.predict, feed_dict = {mainQN_new.imageIn:[s_agent2 / 3.0]})[0]
+                    a_agent_old = sess.run(mainQN_old.predict, feed_dict = {mainQN_old.imageIn:[s_agent_old / 3.0]})[0]
+                    if np.random.rand(1) < e or total_steps < pre_train_steps:
+                        a_agent_new = sess.run(mainQN_new.predict, feed_dict = {mainQN_new.imageIn:[s_agent_new / 3.0]})[0]
 
-                    #a_agent1 = 2
-                    s1, r, d, d_common = env.step([a_agent1, a_agent2])
-                    r_agent1 = r[0]
-                    r_agent2 = r[1]
+                    s1, r, d, d_common = env.step([a_agent_old, a_agent_new])
+                    r_agent_old = r[0]
+                    r_agent_new = r[1]
 
-                    d_agent1 = d[0]
-                    d_agent2 = d[1]
+                    d_agent_old = d[0]
+                    d_agent_new = d[1]
 
-                    s1_agent1 = s1[1]
-                    s1_agent2 = s1[0]
+                    s1_agent_old = s1[1]
+                    s1_agent_new = s1[0]
 
                     total_steps += 1
-                    if d_agent1 == False:
-                        episodeBuffer[0].add(np.reshape(np.array([s_agent1,a_agent1,r_agent1,s1_agent1,d_agent1]),[1,5]))
-                    if d_agent2 == False:
-                        episodeBuffer[1].add(np.reshape(np.array([s_agent2,a_agent2,r_agent2,s1_agent2,d_agent2]),[1,5]))
+                    if d_agent_old == False:
+                        episodeBuffer[0].add(np.reshape(np.array([s_agent_old,a_agent_old,r_agent_old,s1_agent_old,d_agent_old]),[1,5]))
+                    if d_agent_new == False:
+                        episodeBuffer[1].add(np.reshape(np.array([s_agent_new,a_agent_new,r_agent_new,s1_agent_new,d_agent_new]),[1,5]))
                     
                     #print("total_steps: " + str(total_steps))
                     if total_steps > pre_train_steps:
-                        #if e > endE:
-                        #    e -= stepDrop
+                        if e > endE:
+                            e -= stepDrop
                         
                         if total_steps % (update_freq) == 0:
                             trainBatch = myBuffer.sample(batch_size) # Get a random batch of experiences.
@@ -232,11 +229,11 @@ def main():
                             #print("Training New Model")
                             updateTarget(targetOps_new, sess) #Update the target network toward the primary network.
                     
-                    rAll_agent1 += r_agent1
-                    rAll_agent2 += r_agent2
+                    rAll_agent_old += r_agent_old
+                    rAll_agent_new += r_agent_new
 
-                    s_agent1 = s1_agent1
-                    s_agent2 = s1_agent2
+                    s_agent_old = s1_agent_old
+                    s_agent_new = s1_agent_new
                     if d_common == True:
                         #env.write_gif('./video/play_' + str(i) + '.gif')
                         win_index = pre_d.index(False)
@@ -251,38 +248,34 @@ def main():
 
                 win_num[win_index] = win_num[win_index] + 1
 
-                #print("win_num[0]: " + str(win_num[0]))
-                #print("win_num[1]: " + str(win_num[1]))
-                #print("")
                 myBuffer.add(episodeBuffer[1].buffer)
                 jList.append(j)
 
-                print("win_num: " + str(win_num))
-                print("rAll_agent1: " + str(rAll_agent1))
-                print("rAll_agent2: " + str(rAll_agent2))
-                print("")
-                rList_agent1.append(rAll_agent1)
-                rList_agent2.append(rAll_agent2)
+                #print("win_num: " + str(win_num))
+                #print("rAll_agent_old: " + str(rAll_agent_old))
+                #print("rAll_agent_new: " + str(rAll_agent_new))
+                #print("")
+                rList_agent_old.append(rAll_agent_old)
+                rList_agent_new.append(rAll_agent_new)
 
             if ( (win_num[1] > win_num[0]) & (win_num[1] - win_num[0] >= 2) ):
                 sess.run(update_weights)
 
             # Periodically save the model. 
-            if i % 500 == 0:
+            if i % 100 == 0:
                 saver_new_model.save(sess, path + '/model-' + str(i) + '.ckpt')
                 print("Saved Model")
-            '''
-            if len(rList_agent1) % 10 == 0:
-                print(total_steps, "agent1", np.mean(rList_agent1[-10:]), e)
+            
+            if len(rList_agent_old) % 10 == 0:
+                print(total_steps, "agent_old", np.mean(rList_agent_old[-10:]), e)
 
-            if len(rList_agent2) % 10 == 0:
-                print(total_steps, "agent2", np.mean(rList_agent2[-10:]), e)
-            '''
+            if len(rList_agent_new) % 10 == 0:
+                print(total_steps, "agent_new", np.mean(rList_agent_new[-10:]), e)
+            
         saver_new_model.save(sess, path + '/model-' + str(i) + '.ckpt')
 
-    print("Percent of succesful episodes: " + str(sum(rList_agent1)/num_episodes) + "%")
-    print("Percent of succesful episodes: " + str(sum(rList_agent2)/num_episodes) + "%")
-
+    print("Percent of succesful episodes: " + str(sum(rList_agent_old) / num_episodes) + "%")
+    print("Percent of succesful episodes: " + str(sum(rList_agent_new) / num_episodes) + "%")
 
 if __name__ == '__main__':
     main()
