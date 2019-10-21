@@ -98,4 +98,4 @@ Next, using the same conditions and policy algorithm as single snake, I increase
 
 | Paramter | Result video |
 | ------------- | ------------- |
-| annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_4.gif" width="300"> |
+| annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_selfplay1.gif" width="300"> |
