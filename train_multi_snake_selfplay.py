@@ -101,8 +101,8 @@ update_freq = 4 # How often to perform a training step.
 y = .99 # Discount factor on the target Q-values
 startE = 0.1 # Starting chance of random action
 endE = 0.0001 # Final chance of random action
-annealing_steps = 5000000. # How many steps of training to reduce startE to endE.
-num_episodes = 5000000 # How many episodes of game environment to train network with.
+annealing_steps = 500000. # How many steps of training to reduce startE to endE.
+num_episodes = 500000 # How many episodes of game environment to train network with.
 pre_train_steps = 50000 # How many steps of random actions before training begins.
 max_epLength = 500 # The max allowed length of our episode.
 load_model = False # Whether to load a saved model.
@@ -189,6 +189,8 @@ def main():
 
                     a_agent_old = sess.run(mainQN_old.predict, feed_dict = {mainQN_old.imageIn:[s_agent_old / 3.0]})[0]
                     if np.random.rand(1) < e or total_steps < pre_train_steps:
+                        a_agent_new = np.random.randint(0,4)
+                    else:
                         a_agent_new = sess.run(mainQN_new.predict, feed_dict = {mainQN_new.imageIn:[s_agent_new / 3.0]})[0]
 
                     s1, r, d, d_common = env.step([a_agent_old, a_agent_new])
