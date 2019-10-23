@@ -89,7 +89,7 @@ First, let's check that training progresses properly when using the same environ
 
 | Paramter | Result video |
 | ------------- | ------------- |
-| annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_0.gif" width="300"> |
+| annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_single.gif" width="300"> |
 
 When there is only one snake, it is confirmed that the length is increased while acquiring fruit normally without hitting wall after training around 1 hour.
 
