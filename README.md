@@ -103,3 +103,5 @@ Next, using the same conditions and policy algorithm as single snake, I increase
 | Paramter | Result video |
 | ------------- | ------------- |
 | annealing_steps : 5000000, num_episodes : 5000000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_selfplay2.gif" width="300"> |
+
+Looking at the results by parameter, it seems that agent learns some behavior of avoiding walls and looking for fruits, but it is confirmed that there is no further improvement even after training for about two days.
