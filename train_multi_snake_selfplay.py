@@ -29,6 +29,45 @@ import tensorflow as tf
 import tensorflow.contrib.slim as slim
 import random
 
+class Qnetwork_init():
+    def __init__(self, h_size):
+        # The network recieves a frame from the game, flattened into an array.
+        #It then resizes it and processes it through four convolutional layers.
+        self.imageIn = state_pov = tf.placeholder(shape=[None,15,15,4], dtype=tf.float32)
+        self.conv1 = slim.conv2d(inputs=self.imageIn, num_outputs=16, kernel_size=[3,3], stride=[1,1], 
+                                 padding='VALID', biases_initializer=None)
+        self.conv2 = slim.conv2d(inputs=self.conv1, num_outputs=32, kernel_size=[3,3], stride=[1,1], 
+                                 padding='VALID', biases_initializer=None)
+        self.conv3 = slim.conv2d(inputs=self.conv2, num_outputs=32, kernel_size=[3,3], stride=[1,1], 
+                                 padding='VALID', biases_initializer=None)
+            
+        # We take the output from the final convolutional layer and split it into separate advantage and value streams.
+        self.streamAC, self.streamVC = tf.split(self.conv3, 2, 3)
+        self.streamA = slim.flatten(self.streamAC)
+        self.streamV = slim.flatten(self.streamVC)
+        xavier_init = tf.contrib.layers.xavier_initializer()
+        self.AW = tf.Variable(xavier_init([h_size//2,4]))
+        self.VW = tf.Variable(xavier_init([h_size//2,1]))
+        self.Advantage = tf.matmul(self.streamA, self.AW)
+        self.Value = tf.matmul(self.streamV, self.VW)
+            
+        # Then combine them together to get our final Q-values.
+        self.Qout = self.Value + tf.subtract(self.Advantage, tf.reduce_mean(self.Advantage, axis=1, keep_dims=True))
+        self.predict = tf.argmax(self.Qout, 1)
+            
+        # Below we obtain the loss by taking the sum of squares difference between the target and prediction Q values.
+        self.targetQ = tf.placeholder(shape=[None], dtype=tf.float32)
+        self.actions = tf.placeholder(shape=[None], dtype=tf.int32)
+        self.actions_onehot = tf.one_hot(self.actions, 4, dtype=tf.float32)
+            
+        self.Q = tf.reduce_sum(tf.multiply(self.Qout, self.actions_onehot), axis=1)
+            
+        self.td_error = tf.square(self.targetQ - self.Q)
+        self.loss = tf.reduce_mean(self.td_error)
+        self.trainer = tf.train.AdamOptimizer(learning_rate=0.0001)
+        self.updateModel = self.trainer.minimize(self.loss)
+
+
 class Qnetwork():
     def __init__(self, h_size, scope):
         with tf.variable_scope(scope):
@@ -106,7 +145,8 @@ num_episodes = 500000 # How many episodes of game environment to train network w
 pre_train_steps = 50000 # How many steps of random actions before training begins.
 max_epLength = 500 # The max allowed length of our episode.
 load_model = False # Whether to load a saved model.
-path = "./dqn_multi" # The path to save our model to.
+saving_path = "./dqn_multi" # The path to save our model to.
+loding_path = "./dqn_single"
 h_size = 1296 * 2 # The size of the final convolutional layer before splitting it into Advantage and Value streams.
 tau = 0.001 # Rate to update target network toward primary network
 
@@ -114,13 +154,16 @@ def main():
     spacing = 22
     grid_dim = 15
     history = 4
-    save_gif = False
+    save_gif = True
     env = MultiSnake(num_agents=2, num_fruits=3, spacing=spacing, grid_dim=grid_dim, flatten_states=False,
                      reward_killed=-1.0, history=history, save_gif=save_gif)
     env.reset()
     #env = makegymwrapper(env, visualize=test_model)
 
     tf.reset_default_graph()
+    mainQN = Qnetwork_init(h_size=h_size)
+    targetQN = Qnetwork_init(h_size=h_size)
+
     mainQN_new = Qnetwork(h_size=h_size, scope="main_new")
     targetQN_new = Qnetwork(h_size=h_size, scope="target_new")
 
@@ -130,9 +173,11 @@ def main():
     init = tf.global_variables_initializer()
 
     trainables = tf.trainable_variables()
+    variables_init_restore = [v for v in trainables if v.name.split('/')[0] not in ['main_new', 'target_new', 'main_old', 'target_old']]
     variables_new_restore = [v for v in trainables if v.name.split('/')[0] in ['main_new', 'target_new']]
     variables_old_restore = [v for v in trainables if v.name.split('/')[0] in ['main_old', 'target_old']]
 
+    init_weights = [tf.assign(old, init) for (old, init) in zip(variables_old_restore, variables_init_restore)]
     update_weights = [tf.assign(old, new) for (old, new) in zip(variables_old_restore, variables_new_restore)]
     saver_new_model = tf.train.Saver(variables_new_restore)
 
@@ -150,14 +195,23 @@ def main():
     total_steps = 0
 
     #Make a path for our model to be saved in.
-    if not os.path.exists(path):
-        os.makedirs(path)
+    if not os.path.exists(saving_path):
+        os.makedirs(saving_path)
 
     with tf.Session() as sess:
         sess.run(init)
+
+        saver_init = tf.train.Saver(variables_init_restore)
+        ckpt_init = tf.train.get_checkpoint_state(loding_path)
+        saver_init.restore(sess, ckpt_init.model_checkpoint_path)
+
+        #print('Loading Initial Model...')
+        #sess.run(init_weights)
+        sess.run(update_weights)
+
         if load_model == True:
-            print('Loading Model...')
-            ckpt = tf.train.get_checkpoint_state(path)
+            print('Loading Saving Model...')
+            ckpt = tf.train.get_checkpoint_state(saving_path)
             saver_new_model.restore(sess, ckpt.model_checkpoint_path)
             sess.run(update_weights)
 
@@ -172,6 +226,8 @@ def main():
 
                 s_agent_old = s[1]
                 s_agent_new = s[0]
+                s1_agent_old = s_agent_old
+                s1_agent_new = s_agent_new
                 d_agent_old = False
                 d_agent_new = False
                 d = [False, False]
@@ -187,21 +243,42 @@ def main():
                     #env.render()
                     j += 1
 
-                    a_agent_old = sess.run(mainQN_old.predict, feed_dict = {mainQN_old.imageIn:[s_agent_old / 3.0]})[0]
+                    if np.random.rand(1) < e or total_steps < pre_train_steps:
+                        a_agent_old = np.random.randint(0,4)
+                    else:
+                        a_agent_old = sess.run(mainQN_old.predict, feed_dict = {mainQN_old.imageIn:[s_agent_old / 3.0]})[0]
+
                     if np.random.rand(1) < e or total_steps < pre_train_steps:
                         a_agent_new = np.random.randint(0,4)
                     else:
                         a_agent_new = sess.run(mainQN_new.predict, feed_dict = {mainQN_new.imageIn:[s_agent_new / 3.0]})[0]
 
+                    #print("s_agent_old[:,:,0]: " + str(s_agent_old[:,:,0]))
+                    #print("s_agent_new[:,:,0]: " + str(s_agent_new[:,:,0]))
                     s1, r, d, d_common = env.step([a_agent_old, a_agent_new])
+
+                    #if (d[0] == True):
+                    #    print("d: " + str(d))
+
+                    #print("d: " + str(d))
+                    #print("s1[0][:,:,0]: " + str(s1[0][:,:,0]))
+                    #print("s1[1][:,:,0]: " + str(s1[1][:,:,0]))
+                    #print("")
                     r_agent_old = r[0]
                     r_agent_new = r[1]
 
                     d_agent_old = d[0]
                     d_agent_new = d[1]
 
-                    s1_agent_old = s1[1]
-                    s1_agent_new = s1[0]
+                    if ( (d[0] == False) & (d[1] == False) ):
+                        s1_agent_old = s1[1]
+                        s1_agent_new = s1[0]
+                    elif (d[0] == False):
+                        s1_agent_old = s1[1]
+                        s1_agent_new = s1[0]
+                    elif (d[0] == True):
+                        s1_agent_old = s1[0]
+                        s1_agent_new = s1[1]
 
                     total_steps += 1
                     if d_agent_old == False:
@@ -237,7 +314,7 @@ def main():
                     s_agent_old = s1_agent_old
                     s_agent_new = s1_agent_new
                     if d_common == True:
-                        #env.write_gif('./video/play_' + str(i) + '.gif')
+                        #env.write_gif('./video/play_' + str(k) + '.gif')
                         win_index = pre_d.index(False)
                         break
 
@@ -261,11 +338,12 @@ def main():
                 rList_agent_new.append(rAll_agent_new)
 
             if ( (win_num[1] > win_num[0]) & (win_num[1] - win_num[0] >= 2) ):
+                print('Updating Weight...')
                 sess.run(update_weights)
 
             # Periodically save the model. 
             if i % 100 == 0:
-                saver_new_model.save(sess, path + '/model-' + str(i) + '.ckpt')
+                saver_new_model.save(sess, saving_path + '/model-' + str(i) + '.ckpt')
                 print("Saved Model")
             
             if len(rList_agent_old) % 10 == 0:
@@ -274,7 +352,7 @@ def main():
             if len(rList_agent_new) % 10 == 0:
                 print(total_steps, "agent_new", np.mean(rList_agent_new[-10:]), e)
             
-        saver_new_model.save(sess, path + '/model-' + str(i) + '.ckpt')
+        saver_new_model.save(sess, saving_path + '/model-' + str(i) + '.ckpt')
 
     print("Percent of succesful episodes: " + str(sum(rList_agent_old) / num_episodes) + "%")
     print("Percent of succesful episodes: " + str(sum(rList_agent_new) / num_episodes) + "%")
