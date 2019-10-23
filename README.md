@@ -7,12 +7,17 @@ Research for improving Self-Play instability
 Training is done using tensorflow-gpu == 1.13.1, and the environment only needs to import the uploaded multi_snake_2.py.
 
 # Environment Issue
-There is a problem that a states of two snake is saved reversly. In order to solve this problem, the state value should be stored in reversly.
+There is a problem that a state of two snake is saved reversly. In order to solve this problem, the state value should be stored in reversly when both snake are alive. However, if the first green snake died first, it was confirmed that the saved part would return to the original, and the if condition statement was set differently.
 
 ```
-s1_agent1 = s1[1]
-s1_agent2 = s1[0]
+if ( (d[0] == False) & (d[1] == False) ):
+  s1_agent_old = s1[1]
+  s1_agent_new = s1[0]
+elif (d[0] == True):
+  s1_agent_old = s1[0]
+  s1_agent_new = s1[1]
 ```
+
 # Research Introduction
 The uploaded code is the first of the seven research requirements submitted from https://openai.com/blog/requests-for-research-2/.
 
