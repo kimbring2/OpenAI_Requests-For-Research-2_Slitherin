@@ -29,6 +29,7 @@ import tensorflow as tf
 import tensorflow.contrib.slim as slim
 import random
 
+
 class Qnetwork_init():
     def __init__(self, h_size):
         # The network recieves a frame from the game, flattened into an array.
@@ -135,14 +136,14 @@ def updateTarget(op_holder, sess):
         sess.run(op)
 
 
-batch_size = 512 # How many experiences to use for each training step.
+batch_size = 32 # How many experiences to use for each training step.
 update_freq = 4 # How often to perform a training step.
 y = .99 # Discount factor on the target Q-values
 startE = 0.1 # Starting chance of random action
 endE = 0.0001 # Final chance of random action
 annealing_steps = 500000. # How many steps of training to reduce startE to endE.
 num_episodes = 500000 # How many episodes of game environment to train network with.
-pre_train_steps = 50000 # How many steps of random actions before training begins.
+pre_train_steps = 512 # How many steps of random actions before training begins.
 max_epLength = 500 # The max allowed length of our episode.
 load_model = False # Whether to load a saved model.
 saving_path = "./dqn_multi" # The path to save our model to.
@@ -150,11 +151,12 @@ loding_path = "./dqn_single"
 h_size = 1296 * 2 # The size of the final convolutional layer before splitting it into Advantage and Value streams.
 tau = 0.001 # Rate to update target network toward primary network
 
+
 def main():
     spacing = 22
     grid_dim = 15
     history = 4
-    save_gif = True
+    save_gif = False
     env = MultiSnake(num_agents=2, num_fruits=3, spacing=spacing, grid_dim=grid_dim, flatten_states=False,
                      reward_killed=-1.0, history=history, save_gif=save_gif)
     env.reset()
@@ -182,7 +184,6 @@ def main():
     saver_new_model = tf.train.Saver(variables_new_restore)
 
     targetOps_new = updateTargetGraph(variables_new_restore, tau)
-    myBuffer = experience_buffer()
 
     #Set the rate of random action decrease. 
     e = startE
@@ -192,7 +193,6 @@ def main():
     jList = []
     rList_agent_old = []
     rList_agent_new = []
-    total_steps = 0
 
     #Make a path for our model to be saved in.
     if not os.path.exists(saving_path):
@@ -217,8 +217,10 @@ def main():
 
         for i in range(num_episodes):
             win_num = [0, 0]
+            myBuffer = experience_buffer()
+            total_steps = 0
 
-            for k in range(0, 40):
+            for k in range(0, 100):
                 episodeBuffer = [experience_buffer(), experience_buffer()]
 
                 #Reset environment and get first new observation
@@ -244,26 +246,19 @@ def main():
                     j += 1
 
                     if np.random.rand(1) < e or total_steps < pre_train_steps:
+                    #if np.random.rand(1) < e:
                         a_agent_old = np.random.randint(0,4)
                     else:
                         a_agent_old = sess.run(mainQN_old.predict, feed_dict = {mainQN_old.imageIn:[s_agent_old / 3.0]})[0]
 
                     if np.random.rand(1) < e or total_steps < pre_train_steps:
+                    #if np.random.rand(1) < e:
                         a_agent_new = np.random.randint(0,4)
                     else:
                         a_agent_new = sess.run(mainQN_new.predict, feed_dict = {mainQN_new.imageIn:[s_agent_new / 3.0]})[0]
 
-                    #print("s_agent_old[:,:,0]: " + str(s_agent_old[:,:,0]))
-                    #print("s_agent_new[:,:,0]: " + str(s_agent_new[:,:,0]))
                     s1, r, d, d_common = env.step([a_agent_old, a_agent_new])
 
-                    #if (d[0] == True):
-                    #    print("d: " + str(d))
-
-                    #print("d: " + str(d))
-                    #print("s1[0][:,:,0]: " + str(s1[0][:,:,0]))
-                    #print("s1[1][:,:,0]: " + str(s1[1][:,:,0]))
-                    #print("")
                     r_agent_old = r[0]
                     r_agent_new = r[1]
 
@@ -291,22 +286,21 @@ def main():
                         if e > endE:
                             e -= stepDrop
                         
-                        if total_steps % (update_freq) == 0:
-                            trainBatch = myBuffer.sample(batch_size) # Get a random batch of experiences.
+                        trainBatch = myBuffer.sample(batch_size) # Get a random batch of experiences.
 
-                            # Below we perform the Double-DQN update to the target Q-values
-                            Q1 = sess.run(mainQN_new.predict, feed_dict={mainQN_new.imageIn:np.stack(trainBatch[:,3] / 3.0)})
-                            Q2 = sess.run(targetQN_new.Qout, feed_dict={targetQN_new.imageIn:np.stack(trainBatch[:,3] / 3.0)})
-                            end_multiplier = -(trainBatch[:,4] - 1)
-                            doubleQ = Q2[range(batch_size), Q1]
+                        # Below we perform the Double-DQN update to the target Q-values
+                        Q1 = sess.run(mainQN_new.predict, feed_dict={mainQN_new.imageIn:np.stack(trainBatch[:,3] / 3.0)})
+                        Q2 = sess.run(targetQN_new.Qout, feed_dict={targetQN_new.imageIn:np.stack(trainBatch[:,3] / 3.0)})
+                        end_multiplier = -(trainBatch[:,4] - 1)
+                        doubleQ = Q2[range(batch_size), Q1]
 
-                            targetQ = trainBatch[:,2] + (y * doubleQ * end_multiplier)
-                            # Update the network with our target values.
-                            _ = sess.run(mainQN_new.updateModel, feed_dict={mainQN_new.imageIn:np.stack(trainBatch[:,0] / 3.0),
+                        targetQ = trainBatch[:,2] + (y * doubleQ * end_multiplier)
+                        # Update the network with our target values.
+                        _ = sess.run(mainQN_new.updateModel, feed_dict={mainQN_new.imageIn:np.stack(trainBatch[:,0] / 3.0),
                                                                             mainQN_new.targetQ:targetQ, 
                                                                             mainQN_new.actions:trainBatch[:,1]})
-                            #print("Training New Model")
-                            updateTarget(targetOps_new, sess) #Update the target network toward the primary network.
+                        #print("Training New Model")
+                        updateTarget(targetOps_new, sess) #Update the target network toward the primary network.
                     
                     rAll_agent_old += r_agent_old
                     rAll_agent_new += r_agent_new
