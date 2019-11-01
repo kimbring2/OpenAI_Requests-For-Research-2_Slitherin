@@ -215,10 +215,11 @@ def main():
             saver_new_model.restore(sess, ckpt.model_checkpoint_path)
             sess.run(update_weights)
 
+        myBuffer = experience_buffer()
+        total_steps = 0
+
         for i in range(num_episodes):
             win_num = [0, 0]
-            myBuffer = experience_buffer()
-            total_steps = 0
 
             for k in range(0, 100):
                 episodeBuffer = [experience_buffer(), experience_buffer()]
@@ -281,27 +282,6 @@ def main():
                     if d_agent_new == False:
                         episodeBuffer[1].add(np.reshape(np.array([s_agent_new,a_agent_new,r_agent_new,s1_agent_new,d_agent_new]),[1,5]))
                     
-                    #print("total_steps: " + str(total_steps))
-                    if total_steps > pre_train_steps:
-                        if e > endE:
-                            e -= stepDrop
-                        
-                        trainBatch = myBuffer.sample(batch_size) # Get a random batch of experiences.
-
-                        # Below we perform the Double-DQN update to the target Q-values
-                        Q1 = sess.run(mainQN_new.predict, feed_dict={mainQN_new.imageIn:np.stack(trainBatch[:,3] / 3.0)})
-                        Q2 = sess.run(targetQN_new.Qout, feed_dict={targetQN_new.imageIn:np.stack(trainBatch[:,3] / 3.0)})
-                        end_multiplier = -(trainBatch[:,4] - 1)
-                        doubleQ = Q2[range(batch_size), Q1]
-
-                        targetQ = trainBatch[:,2] + (y * doubleQ * end_multiplier)
-                        # Update the network with our target values.
-                        _ = sess.run(mainQN_new.updateModel, feed_dict={mainQN_new.imageIn:np.stack(trainBatch[:,0] / 3.0),
-                                                                            mainQN_new.targetQ:targetQ, 
-                                                                            mainQN_new.actions:trainBatch[:,1]})
-                        #print("Training New Model")
-                        updateTarget(targetOps_new, sess) #Update the target network toward the primary network.
-                    
                     rAll_agent_old += r_agent_old
                     rAll_agent_new += r_agent_new
 
@@ -321,19 +301,45 @@ def main():
 
                 win_num[win_index] = win_num[win_index] + 1
 
+                print("total_steps: " + str(total_steps))
+                print("len(myBuffer.buffer): " + str(len(myBuffer.buffer)))
+                if total_steps > pre_train_steps:
+                    for q in range(0, 16):
+                        trainBatch = myBuffer.sample(batch_size) # Get a random batch of experiences.
+
+                        # Below we perform the Double-DQN update to the target Q-values
+                        Q1 = sess.run(mainQN_new.predict, feed_dict={mainQN_new.imageIn:np.stack(trainBatch[:,3] / 3.0)})
+                        Q2 = sess.run(targetQN_new.Qout, feed_dict={targetQN_new.imageIn:np.stack(trainBatch[:,3] / 3.0)})
+                        end_multiplier = -(trainBatch[:,4] - 1)
+                        doubleQ = Q2[range(batch_size), Q1]
+
+                        targetQ = trainBatch[:,2] + (y * doubleQ * end_multiplier)
+                        # Update the network with our target values.
+                        _ = sess.run(mainQN_new.updateModel, feed_dict={mainQN_new.imageIn:np.stack(trainBatch[:,0] / 3.0),
+                                                                        mainQN_new.targetQ:targetQ, 
+                                                                        mainQN_new.actions:trainBatch[:,1]})
+                        #print("Training New Model")
+                        updateTarget(targetOps_new, sess) #Update the target network toward the primary network.
+
                 myBuffer.add(episodeBuffer[1].buffer)
                 jList.append(j)
 
-                #print("win_num: " + str(win_num))
-                #print("rAll_agent_old: " + str(rAll_agent_old))
-                #print("rAll_agent_new: " + str(rAll_agent_new))
-                #print("")
+                print("win_num: " + str(win_num))
+                print("rAll_agent_old: " + str(rAll_agent_old))
+                print("rAll_agent_new: " + str(rAll_agent_new))
+                print("")
                 rList_agent_old.append(rAll_agent_old)
                 rList_agent_new.append(rAll_agent_new)
 
-            if ( (win_num[1] > win_num[0]) & (win_num[1] - win_num[0] >= 2) ):
+            if ( (win_num[1] > win_num[0]) & (win_num[1] - win_num[0] >= 5) ):
                 print('Updating Weight...')
                 sess.run(update_weights)
+
+                myBuffer = experience_buffer()
+                if e > endE:
+                    e -= stepDrop
+
+                total_steps = 0
 
             # Periodically save the model. 
             if i % 100 == 0:
