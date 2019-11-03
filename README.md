@@ -103,11 +103,13 @@ Next, using the same conditions and policy algorithm as single snake, I increase
 - Traning : python train_multi_snake_selfplay.py --train 
 - Evaluating : python train_multi_snake_selfplay.py --savegif
 
-## Without Pretraining
+## Experiment Result
+After correcting the wrong parts of environment and Self-play algorithm, the current training is in progress. It can be confirmed that the portion to acquire the fruit has been trained to some extent(two days training).
+
 | Paramter | Result video | Training time |
 | ------------- | ------------- | ------------- |
 | annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_selfplay4.gif" width="300"> | 48 hour |
 | annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_selfplay5.gif" width="300"> | 72 hour |
 
-After correcting the wrong parts of environment and Self-play algorithm, the current training is in progress. It can be confirmed that the portion to acquire the fruit has been trained to some extent(two days training).
 
+As learning time goes by, you can see an increasing number of fruits gained if left alone. However, if agent are with an opponent agent, agent have not yet seen any attempts to delete the opponent agent.
