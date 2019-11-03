@@ -6,6 +6,11 @@ Research for improving Self-Play instability
 # Requirements
 Training is done using tensorflow-gpu == 1.13.1, and the environment only needs to import the uploaded multi_snake_2.py.
 
+# How to run a code
+Agent training can be done through 'python train_multi_snake_selfplay.py'. However, the initial and reached values of epilson greedy must be corrected to 0.1 and 0.0001 for training at first. If you call a model that has already been trained and you are here and you want to train, load_model parameter should be set to True.
+
+If you want to test the trained model, you can do 'python train_multi_snake_selfplay_test.py'. When this file is executed, the agent is rendered on the screen and the resulting video is also saved in the folder.
+
 # Environment Issue
 There is a problem that a state of two snake is saved reversly. In order to solve this problem, the state value should be stored in reversly when both snake are alive. However, if the first green snake died first, it was confirmed that the saved part would return to the original, and the if condition statement was set differently.
 
