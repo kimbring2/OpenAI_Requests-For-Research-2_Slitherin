@@ -119,4 +119,15 @@ After correcting the wrong parts of environment and Self-play algorithm, the cur
 
 As training time goes by, you can see an increasing number of fruits gained if left alone. However, if agent are with an opponent agent, agent have not yet seen any attempts to delete the opponent agent.
 
-I train agent an additional 24 hours to confirm that the result is abnormal due to lack of training time. However, it is confirmed that the mutual behavior between the two agents has not yet been displayed.
+I train agent an additional 24 hours to confirm that the result is abnormal due to lack of training time. However, it is confirmed that the mutual behavior between the two agents has not yet been displayed. 
+
+# My Markdown Page
+
+<p class="callout info">A success message</p>
+<p class="callout success">A success message</p>
+<p class="callout warning">A success message</p>
+<p class="callout danger">A success message</p>
+
+Normal markdown text
+
+The phenomenon that one agent collides with the wall continuously when both agents are present
