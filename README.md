@@ -121,15 +121,6 @@ As training time goes by, you can see an increasing number of fruits gained if l
 
 I train agent an additional 24 hours to confirm that the result is abnormal due to lack of training time. However, it is confirmed that the mutual behavior between the two agents has not yet been displayed. 
 
-# My Markdown Page
+<img src="https://github.com/kimbring2/OpenAI_Requests-For-Research-2_Slitherin/blob/master/image/under-construction-3-561190.png" width="50" /> When there are multiple agents, the phenomenon that a single agent collides with a wall that does nothing is continuously observed.
 
-<p class="callout info">A success message</p>
-<p class="callout success">A success message</p>
-<p class="callout warning">A success message</p>
-<p class="callout danger">A success message</p>
-
-Normal markdown text
-Here's our logo (hover to see the title text):
-
-<img src="https://github.com/kimbring2/OpenAI_Requests-For-Research-2_Slitherin/blob/master/image/under-construction-3-561190.png" width="200" height="400" />
 
