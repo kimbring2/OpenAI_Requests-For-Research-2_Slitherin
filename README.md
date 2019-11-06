@@ -131,5 +131,4 @@ I train agent an additional 24 hours to confirm that the result is abnormal due 
 Normal markdown text
 Here's our logo (hover to see the title text):
 
-![alt text](https://www.google.com/imgres?imgurl=https%3A%2F%2Fcdn.iconscout.com%2Ficon%2Fpremium%2Fpng-256-thumb%2Funder-construction-3-561190.png&imgrefurl=https%3A%2F%2Ficonscout.com%2Ficon%2Funder-construction-3&docid=ljICyv4ASEAjuM&tbnid=X6_ss7T2q1yttM%3A&vet=10ahUKEwj6n5fyz9TlAhXHP3AKHf85AwkQMwhsKAkwCQ..i&w=256&h=256&bih=929&biw=1634&q=under%20construction%20icon%20png&ved=0ahUKEwj6n5fyz9TlAhXHP3AKHf85AwkQMwhsKAkwCQ&iact=mrc&uact=8 "Logo Title Text 1")
-The phenomenon that one agent collides with the wall continuously when both agents are present
+![alt text](https://github.com/kimbring2/OpenAI_Requests-For-Research-2_Slitherin/blob/master/image/under-construction-3-561190.png "Under construction") The phenomenon that one agent collides with the wall continuously when both agents are present
