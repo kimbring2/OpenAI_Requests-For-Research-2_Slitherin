@@ -115,6 +115,8 @@ After correcting the wrong parts of environment and Self-play algorithm, the cur
 | ------------- | ------------- | ------------- |
 | annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_selfplay4.gif" width="300"> | 48 hour |
 | annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_selfplay5.gif" width="300"> | 72 hour |
+| annealing_steps : 500000, num_episodes : 500000, pre_train_steps : 50000, startE : 0.1, endE : 0.0001 | <img src="image/play_selfplay6.gif" width="300"> | 96 hour |
 
+As training time goes by, you can see an increasing number of fruits gained if left alone. However, if agent are with an opponent agent, agent have not yet seen any attempts to delete the opponent agent.
 
-As learning time goes by, you can see an increasing number of fruits gained if left alone. However, if agent are with an opponent agent, agent have not yet seen any attempts to delete the opponent agent.
+I train agent an additional 24 hours to confirm that the result is abnormal due to lack of training time. However, it is confirmed that the mutual behavior between the two agents has not yet been displayed.
