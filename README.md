@@ -131,4 +131,4 @@ I train agent an additional 24 hours to confirm that the result is abnormal due 
 Normal markdown text
 Here's our logo (hover to see the title text):
 
-![alt text](https://github.com/kimbring2/OpenAI_Requests-For-Research-2_Slitherin/blob/master/image/under-construction-3-561190.png "Under construction") The phenomenon that one agent collides with the wall continuously when both agents are present
+![alt text](https://github.com/kimbring2/OpenAI_Requests-For-Research-2_Slitherin/blob/master/image/under-construction-3-561190.png "Under construction" | width=100) The phenomenon that one agent collides with the wall continuously when both agents are present
