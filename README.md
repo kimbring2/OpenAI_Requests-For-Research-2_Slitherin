@@ -129,5 +129,8 @@ I train agent an additional 24 hours to confirm that the result is abnormal due 
 <p class="callout danger">A success message</p>
 
 Normal markdown text
+Here's our logo (hover to see the title text):
 
+Inline-style: 
+![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
 The phenomenon that one agent collides with the wall continuously when both agents are present
