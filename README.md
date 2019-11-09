@@ -121,6 +121,7 @@ As training time goes by, you can see an increasing number of fruits gained if l
 
 I train agent an additional 24 hours to confirm that the result is abnormal due to lack of training time. However, it is confirmed that the mutual behavior between the two agents has not yet been displayed. 
 
+## Current Progress
 <img src="https://github.com/kimbring2/OpenAI_Requests-For-Research-2_Slitherin/blob/master/image/under-construction-3-561190.png" width="150" /> 
 When there are multiple agents, the phenomenon that a single agent collides with a wall that does nothing is continuously observed.
 
