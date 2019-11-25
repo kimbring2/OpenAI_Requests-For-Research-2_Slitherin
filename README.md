@@ -12,7 +12,7 @@ Agent training can be done through 'python train_multi_snake_selfplay.py'. Howev
 If you want to test the trained model, you can do 'python train_multi_snake_selfplay_test.py'. When this file is executed, the agent is rendered on the screen and the resulting video is also saved in the folder.
 
 # Environment Issue
-~There is a problem that a state of two snake is saved reversly. In order to solve this problem, the state value should be stored in reversly when both snake are alive. However, if the first green snake died first, it was confirmed that the saved part would return to the original, and the if condition statement was set differently.
+~There is a problem that a state of two snake is saved reversly. In order to solve this problem, the state value should be stored in reversly when both snake are alive. However, if the first green snake died first, it was confirmed that the saved part would return to the original, and the if condition statement was set differently.~
 
 ```
 if ( (d[0] == False) & (d[1] == False) ):
@@ -21,7 +21,7 @@ if ( (d[0] == False) & (d[1] == False) ):
 elif (d[0] == True):
   s1_agent_old = s1[0]
   s1_agent_new = s1[1]
-```~
+```
 
 # Research Introduction
 The uploaded code is the first of the seven research requirements submitted from https://openai.com/blog/requests-for-research-2/.
