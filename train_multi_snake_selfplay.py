@@ -11,7 +11,7 @@
    limitations under the License.
 '''
 
-# train a single snake agent using the baseline PPO algorithm
+# Train a single snake agent using the baseline PPO algorithm
 import sys
 
 import tensorflow as tf
@@ -28,6 +28,7 @@ import re
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
 import random
+import time
 
 
 class Qnetwork_init():
@@ -62,7 +63,7 @@ class Qnetwork_init():
         self.actions_onehot = tf.one_hot(self.actions, 4, dtype=tf.float32)
             
         self.Q = tf.reduce_sum(tf.multiply(self.Qout, self.actions_onehot), axis=1)
-            
+        
         self.td_error = tf.square(self.targetQ - self.Q)
         self.loss = tf.reduce_mean(self.td_error)
         self.trainer = tf.train.AdamOptimizer(learning_rate=0.0001)
@@ -72,8 +73,8 @@ class Qnetwork_init():
 class Qnetwork():
     def __init__(self, h_size, scope):
         with tf.variable_scope(scope):
-            #The network recieves a frame from the game, flattened into an array.
-            #It then resizes it and processes it through four convolutional layers.
+            # The network recieves a frame from the game, flattened into an array.
+            # It then resizes it and processes it through four convolutional layers.
             self.imageIn = state_pov = tf.placeholder(shape=[None,15,15,4], dtype=tf.float32)
             self.conv1 = slim.conv2d(inputs=self.imageIn, num_outputs=16, kernel_size=[3,3], stride=[1,1], 
                                      padding='VALID', biases_initializer=None)
@@ -82,7 +83,7 @@ class Qnetwork():
             self.conv3 = slim.conv2d(inputs=self.conv2, num_outputs=32, kernel_size=[3,3], stride=[1,1], 
                                      padding='VALID', biases_initializer=None)
             
-            #We take the output from the final convolutional layer and split it into separate advantage and value streams.
+            # We take the output from the final convolutional layer and split it into separate advantage and value streams.
             self.streamAC, self.streamVC = tf.split(self.conv3, 2, 3)
             self.streamA = slim.flatten(self.streamAC)
             self.streamV = slim.flatten(self.streamVC)
@@ -92,11 +93,11 @@ class Qnetwork():
             self.Advantage = tf.matmul(self.streamA, self.AW)
             self.Value = tf.matmul(self.streamV, self.VW)
             
-            #Then combine them together to get our final Q-values.
+            # Then combine them together to get our final Q-values.
             self.Qout = self.Value + tf.subtract(self.Advantage, tf.reduce_mean(self.Advantage, axis=1, keep_dims=True))
             self.predict = tf.argmax(self.Qout, 1)
             
-            #Below we obtain the loss by taking the sum of squares difference between the target and prediction Q values.
+            # Below we obtain the loss by taking the sum of squares difference between the target and prediction Q values.
             self.targetQ = tf.placeholder(shape=[None], dtype=tf.float32)
             self.actions = tf.placeholder(shape=[None], dtype=tf.int32)
             self.actions_onehot = tf.one_hot(self.actions, 4, dtype=tf.float32)
@@ -139,11 +140,11 @@ def updateTarget(op_holder, sess):
 batch_size = 32 # How many experiences to use for each training step.
 update_freq = 4 # How often to perform a training step.
 y = .99 # Discount factor on the target Q-values
-startE = 0.1 # Starting chance of random action
-endE = 0.0001 # Final chance of random action
-annealing_steps = 500000. # How many steps of training to reduce startE to endE.
-num_episodes = 500000 # How many episodes of game environment to train network with.
-pre_train_steps = 512 # How many steps of random actions before training begins.
+startE = 1 # Starting chance of random action
+endE = 0.1 # Final chance of random action
+annealing_steps = 100000. # How many steps of training to reduce startE to endE.
+num_episodes = 100000 # How many episodes of game environment to train network with.
+pre_train_steps = 500 # How many steps of random actions before training begins.
 max_epLength = 500 # The max allowed length of our episode.
 load_model = False # Whether to load a saved model.
 saving_path = "./dqn_multi" # The path to save our model to.
@@ -185,16 +186,16 @@ def main():
 
     targetOps_new = updateTargetGraph(variables_new_restore, tau)
 
-    #Set the rate of random action decrease. 
+    # Set the rate of random action decrease. 
     e = startE
     stepDrop = (startE - endE) / annealing_steps
 
-    #create lists to contain total rewards and steps per episode
+    # Create lists to contain total rewards and steps per episode
     jList = []
     rList_agent_old = []
     rList_agent_new = []
 
-    #Make a path for our model to be saved in.
+    # Make a path for our model to be saved in.
     if not os.path.exists(saving_path):
         os.makedirs(saving_path)
 
@@ -205,7 +206,7 @@ def main():
         ckpt_init = tf.train.get_checkpoint_state(loding_path)
         saver_init.restore(sess, ckpt_init.model_checkpoint_path)
 
-        #print('Loading Initial Model...')
+        print('Loading Initial Model...')
         #sess.run(init_weights)
         sess.run(update_weights)
 
@@ -244,15 +245,17 @@ def main():
                 #The Q-Network
                 while j < max_epLength: #If the agent takes longer than 200 moves to reach either of the blocks, end the trial.
                     #env.render()
+                    #time.sleep(0.5)
+
                     j += 1
 
-                    if np.random.rand(1) < e or total_steps < pre_train_steps:
+                    if np.random.rand(1) < e or i < 5000:
                     #if np.random.rand(1) < e:
                         a_agent_old = np.random.randint(0,4)
                     else:
                         a_agent_old = sess.run(mainQN_old.predict, feed_dict = {mainQN_old.imageIn:[s_agent_old / 3.0]})[0]
 
-                    if np.random.rand(1) < e or total_steps < pre_train_steps:
+                    if np.random.rand(1) < e or i < 5000:
                     #if np.random.rand(1) < e:
                         a_agent_new = np.random.randint(0,4)
                     else:
@@ -266,16 +269,9 @@ def main():
                     d_agent_old = d[0]
                     d_agent_new = d[1]
 
-                    if ( (d[0] == False) & (d[1] == False) ):
-                        s1_agent_old = s1[1]
-                        s1_agent_new = s1[0]
-                    elif (d[0] == False):
-                        s1_agent_old = s1[1]
-                        s1_agent_new = s1[0]
-                    elif (d[0] == True):
-                        s1_agent_old = s1[0]
-                        s1_agent_new = s1[1]
-
+                    s1_agent_old = s1[0]
+                    s1_agent_new = s1[1]
+                   
                     total_steps += 1
                     if d_agent_old == False:
                         episodeBuffer[0].add(np.reshape(np.array([s_agent_old,a_agent_old,r_agent_old,s1_agent_old,d_agent_old]),[1,5]))
@@ -287,9 +283,16 @@ def main():
 
                     s_agent_old = s1_agent_old
                     s_agent_new = s1_agent_new
-                    if d_common == True:
+                    #if (d_common == True):
+                    #    win_index = pre_d.index(False)
+                    #    break
+                    
+                    if (d_agent_old == True):
                         #env.write_gif('./video/play_' + str(k) + '.gif')
-                        win_index = pre_d.index(False)
+                        win_index = 1
+                        break
+                    elif (d_agent_new == True):
+                        win_index = 0
                         break
 
                     if j == max_epLength:
@@ -300,9 +303,6 @@ def main():
                     pre_d[1] = d[1]
 
                 win_num[win_index] = win_num[win_index] + 1
-
-                print("total_steps: " + str(total_steps))
-                print("len(myBuffer.buffer): " + str(len(myBuffer.buffer)))
                 if total_steps > pre_train_steps:
                     for q in range(0, 16):
                         trainBatch = myBuffer.sample(batch_size) # Get a random batch of experiences.
@@ -314,13 +314,14 @@ def main():
                         doubleQ = Q2[range(batch_size), Q1]
 
                         targetQ = trainBatch[:,2] + (y * doubleQ * end_multiplier)
+
                         # Update the network with our target values.
                         _ = sess.run(mainQN_new.updateModel, feed_dict={mainQN_new.imageIn:np.stack(trainBatch[:,0] / 3.0),
                                                                         mainQN_new.targetQ:targetQ, 
                                                                         mainQN_new.actions:trainBatch[:,1]})
                         #print("Training New Model")
                         updateTarget(targetOps_new, sess) #Update the target network toward the primary network.
-
+                
                 myBuffer.add(episodeBuffer[1].buffer)
                 jList.append(j)
 
@@ -340,7 +341,7 @@ def main():
                     e -= stepDrop
 
                 total_steps = 0
-
+            
             # Periodically save the model. 
             if i % 100 == 0:
                 saver_new_model.save(sess, saving_path + '/model-' + str(i) + '.ckpt')
