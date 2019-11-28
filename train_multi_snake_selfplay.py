@@ -127,14 +127,17 @@ class experience_buffer():
         return np.reshape(np.array(random.sample(self.buffer,size)), [size,5])
 
 
+# Function for getting traning value target network 
 def updateTargetGraph(tfVars, tau):
     total_vars = len(tfVars)
     op_holder = []
-    for idx,var in enumerate(tfVars[0:total_vars//2]):
+    for idx, var in enumerate(tfVars[0:total_vars//2]):
         op_holder.append(tfVars[idx + total_vars // 2].assign((var.value() * tau) + ((1 - tau) * tfVars[idx + total_vars // 2].value())))
+
     return op_holder
 
 
+# Function for updating target network
 def updateTarget(op_holder, sess):
     for op in op_holder:
         sess.run(op)
@@ -181,15 +184,22 @@ def main():
     # Tensorflow restore weight setting 
     init = tf.global_variables_initializer()
 
+    # Trainable variable for pretrain agent, agent1, agent2
     trainables = tf.trainable_variables()
     variables_init_restore = [v for v in trainables if v.name.split('/')[0] not in ['main_new', 'target_new', 'main_old', 'target_old']]
     variables_new_restore = [v for v in trainables if v.name.split('/')[0] in ['main_new', 'target_new']]
     variables_old_restore = [v for v in trainables if v.name.split('/')[0] in ['main_old', 'target_old']]
 
+    # Restore pretrain weight to agent1
     init_weights = [tf.assign(old, init) for (old, init) in zip(variables_old_restore, variables_init_restore)]
+
+    # Copy weight of agent2 to agent1
     update_weights = [tf.assign(old, new) for (old, new) in zip(variables_old_restore, variables_new_restore)]
+
+    # Tensorflow Saver for agent2
     saver_new_model = tf.train.Saver(variables_new_restore)
 
+    # Trainable variable for target network
     targetOps_new = updateTargetGraph(variables_new_restore, tau)
 
     # Set the rate of random action decrease. 
@@ -352,7 +362,7 @@ def main():
                         _ = sess.run(mainQN_new.updateModel, feed_dict={mainQN_new.imageIn:np.stack(trainBatch[:,0] / 3.0),
                                                                         mainQN_new.targetQ:targetQ, 
                                                                         mainQN_new.actions:trainBatch[:,1]})
-                        #print("Training New Model")
+                        #print("Training agent2 network")
                         updateTarget(targetOps_new, sess) # Update the target network toward the primary network.
                 
                 # Save a history of agent2 to buffer
