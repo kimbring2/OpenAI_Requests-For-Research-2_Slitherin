@@ -31,6 +31,7 @@ import random
 import time
 
 
+# Model for pretraining agent
 class Qnetwork_init():
     def __init__(self, h_size):
         # The network recieves a frame from the game, flattened into an array.
@@ -70,12 +71,13 @@ class Qnetwork_init():
         self.updateModel = self.trainer.minimize(self.loss)
 
 
+# Model for new agent
 class Qnetwork():
     def __init__(self, h_size, scope):
         with tf.variable_scope(scope):
             # The network recieves a frame from the game, flattened into an array.
             # It then resizes it and processes it through four convolutional layers.
-            self.imageIn = state_pov = tf.placeholder(shape=[None,15,15,4], dtype=tf.float32)
+            self.imageIn = tf.placeholder(shape=[None,15,15,4], dtype=tf.float32)
             self.conv1 = slim.conv2d(inputs=self.imageIn, num_outputs=16, kernel_size=[3,3], stride=[1,1], 
                                      padding='VALID', biases_initializer=None)
             self.conv2 = slim.conv2d(inputs=self.conv1, num_outputs=32, kernel_size=[3,3], stride=[1,1], 
@@ -110,6 +112,7 @@ class Qnetwork():
             self.updateModel = self.trainer.minimize(self.loss)
 
 
+# Experience buffer for DQN
 class experience_buffer():
     def __init__(self, buffer_size=50000):
         self.buffer = []
@@ -142,9 +145,9 @@ update_freq = 4 # How often to perform a training step.
 y = .99 # Discount factor on the target Q-values
 startE = 1 # Starting chance of random action
 endE = 0.1 # Final chance of random action
-annealing_steps = 100000. # How many steps of training to reduce startE to endE.
-num_episodes = 100000 # How many episodes of game environment to train network with.
-pre_train_steps = 500 # How many steps of random actions before training begins.
+annealing_episodes = 500. # How many steps of training to reduce startE to endE.
+num_episodes = 5000 # How many episodes of game environment to train network with.
+pre_train_steps = 512 # How many steps of random actions before training begins.
 max_epLength = 500 # The max allowed length of our episode.
 load_model = False # Whether to load a saved model.
 saving_path = "./dqn_multi" # The path to save our model to.
@@ -154,6 +157,7 @@ tau = 0.001 # Rate to update target network toward primary network
 
 
 def main():
+    # Environment setting
     spacing = 22
     grid_dim = 15
     history = 4
@@ -163,6 +167,7 @@ def main():
     env.reset()
     #env = makegymwrapper(env, visualize=test_model)
 
+    # Tensorflow model setting
     tf.reset_default_graph()
     mainQN = Qnetwork_init(h_size=h_size)
     targetQN = Qnetwork_init(h_size=h_size)
@@ -173,6 +178,7 @@ def main():
     mainQN_old = Qnetwork(h_size=h_size, scope="main_old")
     targetQN_old = Qnetwork(h_size=h_size, scope="target_old")
 
+    # Tensorflow restore weight setting 
     init = tf.global_variables_initializer()
 
     trainables = tf.trainable_variables()
@@ -188,7 +194,7 @@ def main():
 
     # Set the rate of random action decrease. 
     e = startE
-    stepDrop = (startE - endE) / annealing_steps
+    stepDrop = (startE - endE) / annealing_episodes
 
     # Create lists to contain total rewards and steps per episode
     jList = []
@@ -216,94 +222,121 @@ def main():
             saver_new_model.restore(sess, ckpt.model_checkpoint_path)
             sess.run(update_weights)
 
+        # Buffer for saving winning agent history 
         myBuffer = experience_buffer()
-        total_steps = 0
-
         for i in range(num_episodes):
+            # Reset winning number
             win_num = [0, 0]
 
+            # Decay exploration parameter
+            if e > endE:
+                e -= stepDrop
+
+            # Matching agent1, agent2 for Self-Play
             for k in range(0, 100):
                 episodeBuffer = [experience_buffer(), experience_buffer()]
 
-                #Reset environment and get first new observation
+                # Reset environment and get first new observation
                 s = env.reset()
 
-                s_agent_old = s[1]
-                s_agent_new = s[0]
+                # Initialize state, reward, end flag of agent1, agent2
+                s_agent_old = s[0]
+                s_agent_new = s[1]
+                s_agent_old = np.transpose(s_agent_old, (1, 2, 0)) # Change axis for Tensorflow placeholder
+                s_agent_new = np.transpose(s_agent_new, (1, 2, 0))
                 s1_agent_old = s_agent_old
                 s1_agent_new = s_agent_new
                 d_agent_old = False
                 d_agent_new = False
+
+                # Initialize end flag and winning number for Self-Play
                 d = [False, False]
                 pre_d = [False, False]
                 win_index = None
 
+                # Initialize sum of reward of agent1, agent2
                 rAll_agent_old = 0
                 rAll_agent_new = 0
-                j = 0
 
-                #The Q-Network
-                while j < max_epLength: #If the agent takes longer than 200 moves to reach either of the blocks, end the trial.
+                # The Q-Network
+                for j in range(0, max_epLength):
                     #env.render()
-                    #time.sleep(0.5)
-
-                    j += 1
-
-                    if np.random.rand(1) < e or i < 5000:
-                    #if np.random.rand(1) < e:
+                    #time.sleep(0.3)
+                    
+                    # Select action of agent1
+                    if np.random.rand(1) < e or i < 10:
                         a_agent_old = np.random.randint(0,4)
                     else:
                         a_agent_old = sess.run(mainQN_old.predict, feed_dict = {mainQN_old.imageIn:[s_agent_old / 3.0]})[0]
 
-                    if np.random.rand(1) < e or i < 5000:
-                    #if np.random.rand(1) < e:
+                    # Select action of agent2
+                    if np.random.rand(1) < e or i < 10:
                         a_agent_new = np.random.randint(0,4)
                     else:
                         a_agent_new = sess.run(mainQN_new.predict, feed_dict = {mainQN_new.imageIn:[s_agent_new / 3.0]})[0]
 
+                    # Move agent1, agent2 and get reward, next state, end flag of each agent and end flag of current episode
                     s1, r, d, d_common = env.step([a_agent_old, a_agent_new])
 
+                    # Reward of agent1, agent2
                     r_agent_old = r[0]
                     r_agent_new = r[1]
 
+                    # End flag of agent1, agent2
                     d_agent_old = d[0]
                     d_agent_new = d[1]
 
+                    # Next state of agent1, agent2 
                     s1_agent_old = s1[0]
                     s1_agent_new = s1[1]
+
+                    # change axis for Placeholder of Tensorflow
+                    s1_agent_old = np.transpose(s1_agent_old, (1, 2, 0))
+                    s1_agent_new = np.transpose(s1_agent_new, (1, 2, 0))
                    
-                    total_steps += 1
+                    # Save history of agent1, agent2 if there are not dead
                     if d_agent_old == False:
                         episodeBuffer[0].add(np.reshape(np.array([s_agent_old,a_agent_old,r_agent_old,s1_agent_old,d_agent_old]),[1,5]))
                     if d_agent_new == False:
                         episodeBuffer[1].add(np.reshape(np.array([s_agent_new,a_agent_new,r_agent_new,s1_agent_new,d_agent_new]),[1,5]))
                     
+                    # Add a reward of each agent to total reward
                     rAll_agent_old += r_agent_old
                     rAll_agent_new += r_agent_new
 
+                    # Save a next state to current state for next step
                     s_agent_old = s1_agent_old
                     s_agent_new = s1_agent_new
-                    #if (d_common == True):
-                    #    win_index = pre_d.index(False)
-                    #    break
-                    
-                    if (d_agent_old == True):
-                        #env.write_gif('./video/play_' + str(k) + '.gif')
-                        win_index = 1
-                        break
-                    elif (d_agent_new == True):
-                        win_index = 0
-                        break
 
-                    if j == max_epLength:
+                    # Select winning agent at end of current episode
+                    if (d_common == True):
+                        win_index = pre_d.index(False)
+                        break
+                    
+                    #if (d_agent_old == True):
+                    #    #env.write_gif('./video/play_' + str(k) + '.gif')
+                    #    win_index = 1
+                    #    break
+                    #elif (d_agent_new == True):
+                    #    win_index = 0
+                    #    break
+
+                    # Select random agent as winning agent if both are alive until end of episode
+                    if j == max_epLength - 1:
                         win_index = np.random.randint(0,2)
 
-                    #print("pre_d: " + str(pre_d))
+                    print("d: " + str(d))
+                    # Save a current end flag of each agent for next step
                     pre_d[0] = d[0]
                     pre_d[1] = d[1]
 
+                #print("len(myBuffer.buffer): " + str(len(myBuffer.buffer)))
+                # Increase winning flag
                 win_num[win_index] = win_num[win_index] + 1
-                if total_steps > pre_train_steps:
+
+                # Start training if size of winning agent buffer is large than batch size
+                if len(myBuffer.buffer) > batch_size:
+                    # Repeat a training 16 times
                     for q in range(0, 16):
                         trainBatch = myBuffer.sample(batch_size) # Get a random batch of experiences.
 
@@ -320,43 +353,38 @@ def main():
                                                                         mainQN_new.targetQ:targetQ, 
                                                                         mainQN_new.actions:trainBatch[:,1]})
                         #print("Training New Model")
-                        updateTarget(targetOps_new, sess) #Update the target network toward the primary network.
+                        updateTarget(targetOps_new, sess) # Update the target network toward the primary network.
                 
+                # Save a history of agent2 to buffer
                 myBuffer.add(episodeBuffer[1].buffer)
-                jList.append(j)
 
-                print("win_num: " + str(win_num))
-                print("rAll_agent_old: " + str(rAll_agent_old))
-                print("rAll_agent_new: " + str(rAll_agent_new))
-                print("")
+                #print("win_num: " + str(win_num))
+                #print("rAll_agent_old: " + str(rAll_agent_old))
+                #print("rAll_agent_new: " + str(rAll_agent_new))
+                #print("")
+                
+                # Save sum of each agent for printing performance
                 rList_agent_old.append(rAll_agent_old)
                 rList_agent_new.append(rAll_agent_new)
 
+            # Change best agent if agent2 wins to agent1 
             if ( (win_num[1] > win_num[0]) & (win_num[1] - win_num[0] >= 5) ):
                 print('Updating Weight...')
                 sess.run(update_weights)
 
                 myBuffer = experience_buffer()
-                if e > endE:
-                    e -= stepDrop
-
                 total_steps = 0
             
-            # Periodically save the model. 
-            if i % 100 == 0:
+            # Periodically save the model 
+            if i % 10 == 0:
                 saver_new_model.save(sess, saving_path + '/model-' + str(i) + '.ckpt')
                 print("Saved Model")
             
+            # Periodically print performance of agent 
             if len(rList_agent_old) % 10 == 0:
-                print(total_steps, "agent_old", np.mean(rList_agent_old[-10:]), e)
-
-            if len(rList_agent_new) % 10 == 0:
-                print(total_steps, "agent_new", np.mean(rList_agent_new[-10:]), e)
+                print(i, "agent_old", np.mean(rList_agent_old[-10:]), e)
+                print(i, "agent_new", np.mean(rList_agent_new[-10:]), e)
+                print("")
             
-        saver_new_model.save(sess, saving_path + '/model-' + str(i) + '.ckpt')
-
-    print("Percent of succesful episodes: " + str(sum(rList_agent_old) / num_episodes) + "%")
-    print("Percent of succesful episodes: " + str(sum(rList_agent_new) / num_episodes) + "%")
-
 if __name__ == '__main__':
     main()
