@@ -1,5 +1,6 @@
 # train a single snake agent using the baseline PPO algorithm
 import sys
+import argparse
 
 import tensorflow as tf
 import gym
@@ -15,6 +16,7 @@ import re
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
 import random
+
 
 class Qnetwork():
     def __init__(self, h_size):
@@ -82,21 +84,21 @@ def updateTarget(op_holder, sess):
         sess.run(op)
 
 
-batch_size = 512 # How many experiences to use for each training step.
-update_freq = 4 # How often to perform a training step.
-y = .99 # Discount factor on the target Q-values
-startE = 0.1 # Starting chance of random action
-endE = 0.0001 # Final chance of random action
-annealing_steps = 500000. # How many steps of training to reduce startE to endE.
-num_episodes = 500000 # How many episodes of game environment to train network with.
-pre_train_steps = 50000 # How many steps of random actions before training begins.
-max_epLength = 500 # The max allowed length of our episode.
-load_model = False # Whether to load a saved model.
-path = "./dqn_single" # The path to save our model to.
-h_size = 1296*2 # The size of the final convolutional layer before splitting it into Advantage and Value streams.
-tau = 0.001 # Rate to update target network toward primary network
-
-def main():
+def main(config):
+    batch_size = config.batch_size
+    update_freq = config.update_freq
+    y = config.y
+    startE = config.startE
+    endE = config.endE
+    annealing_steps = config.annealing_steps
+    num_episodes = config.num_episodes
+    pre_train_steps = config.pre_train_steps
+    max_epLength = config.max_epLength
+    load_model = config.load_model
+    path = config.path
+    h_size = config.h_size
+    tau = config.tau
+    
     spacing = 22
     grid_dim = 15
     history = 4
@@ -152,14 +154,13 @@ def main():
 
                 #Choose an action by greedily (with e chance of random action) from the Q-network
                 if np.random.rand(1) < e or total_steps < pre_train_steps:
-                #if np.random.rand(1) < e:
                     a = np.random.randint(0,4)
                 else:
                     a = sess.run(mainQN.predict, feed_dict = {mainQN.imageIn:[s / 3.0]})[0]
 
                 s1, r, _, d = env.step(a)
                 total_steps += 1
-
+                
                 #Save the experience to our episode buffer.
                 episodeBuffer.add(np.reshape(np.array([s,a,r,s1,d]),[1,5]))
                 if total_steps > pre_train_steps:
@@ -182,7 +183,7 @@ def main():
                                                                     mainQN.actions:trainBatch[:,1]})
                         #print("Training Model")
                         updateTarget(targetOps, sess) #Update the target network toward the primary network.
-
+                
                 s = s1
                 rAll += r
                 if d == True:
@@ -201,10 +202,27 @@ def main():
             if len(rList) % 10 == 0:
                 print(total_steps, np.mean(rList[-10:]), e)
 
-        saver.save(sess, path + '/model-' + str(i) + '.ckpt')
+        #saver.save(sess, path + '/model-' + str(i) + '.ckpt')
 
-    #print("Percent of succesful episodes: " + str(sum(rList)/num_episodes) + "%")
+    print("Percent of succesful episodes: " + str(sum(rList)/num_episodes) + "%")
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--batch_size", default=512, type=int, help='How many experiences to use for each training step')
+    parser.add_argument("--update_freq", default=4, type=int, help='How often to perform a training step')
+    parser.add_argument("--y", default=0.99, type=float, help='Discount factor on the target Q-values')
+    parser.add_argument("--startE", default=0.1, type=float, help='Starting chance of random action')
+    parser.add_argument("--endE", default=0.0001, type=float, help='Final chance of random action')
+    parser.add_argument("--annealing_steps", default=500000, type=int, help='How many steps of training to reduce startE to endE')
+    parser.add_argument("--num_episodes", default=500000, type=int, help='How many episodes of game environment to train network with')
+    parser.add_argument("--pre_train_steps", default=5000, type=int, help='How many steps of random actions before training begins')
+    parser.add_argument("--max_epLength", default=500, type=int, help='The max allowed length of our episode')
+    parser.add_argument("--load_model", default=False, action='store_true', help='Whether to load a saved model')
+    parser.add_argument("--path", default='./dqn_single', help='The path to save our model to')
+    parser.add_argument("--h_size", default=1296*2, type=int, help='The size of the final convolutional layer before splitting it into Advantage and Value streams')
+    parser.add_argument("--tau", default=0.001, type=float, help='Rate to update target network toward primary network')
+
+    config = parser.parse_args()
+
+    main(config)
