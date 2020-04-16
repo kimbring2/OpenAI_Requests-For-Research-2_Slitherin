@@ -11,6 +11,22 @@ Agent training can be done through 'python train_multi_snake_selfplay.py'. Howev
 
 If you want to test the trained model, you can do 'python test_multi_snake_selfplay.py'. When this file is executed, the agent is rendered on the screen and the resulting video is also saved in the folder.
 
+# Docker running option
+You can run that code using Docker. In main directory of that project, run below command for building a Docker image.
+```
+docker build --tag test:0.1 .
+```
+
+After finishing building, run Docker image and open bash shell of it.
+```
+docker run -it test:0.1 bash
+```
+
+In bash shell, run a project code.
+```
+pyhon train_single_snake_dddqn_v2.py
+```
+
 # Environment Issue(Solved)
 ~There is a problem that a state of two snake is saved reversly. In order to solve this problem, the state value should be stored in reversly when both snake are alive. However, if the first green snake died first, it was confirmed that the saved part would return to the original, and the if condition statement was set differently.~
 
