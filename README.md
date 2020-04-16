@@ -40,7 +40,7 @@ The uploaded code is the first of the seven research requirements submitted from
 # Single Agent Warm-Up
 Before playing multiple snake games, I first solved a single snake game on dqn, but was able to tweet and generate decent results.
 
-Sigle Agent Result video : https://twitter.com/kimbring2/status/963671596610326528
+Sigle agent result : https://twitter.com/kimbring2/status/963671596610326528
 
 # Reference
 In this research, there was no given code for environment and algorithm, so I need to create and find a multi-agent snake game and self-play algorithm. Many excellent other researchers have published environment and algorithm on github, so I can use them as a reference to conduct research presented by OpenAI.
@@ -50,7 +50,7 @@ In this research, there was no given code for environment and algorithm, so I ne
 3. https://github.com/ingkanit/multi-snake-RL - PPO2 for Multi Snake playing
 4. https://web.stanford.edu/~surag/posts/alphazero.html - Self Play Algorithm
 
-Once again, thanks for these researchers.
+Once again, thanks for these project.
 
 # Environment Setting
 The experiment first purpose is solving two snakes environment. The height and width of state of environment is two dimensional array which have a shape of 15x15 and each snake have egcentric view which gives 2 for body of itself and 3 for head of itself. Body and head of other snake gets 4, 5 in turn. And -1 is given for dead snake and 1 is given for fruit. In addition to the current state, the previous three states can be used together, so that in addition to the snake position information, direction information can be grasped together by a network without RNN network. Each snake can move up, down, right, left for getting fruit which gives 1 reward and avoiding wall hitting which gives -1 reward. Here snakes must compete with each other and get the maximum reward. 
