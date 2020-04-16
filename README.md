@@ -27,9 +27,6 @@ In bash shell, run a project code.
 pyhon train_single_snake_dddqn_v2.py
 ```
 
-# Environment Issue(Solved)
-~There is a problem that a state of two snake is saved reversly. In order to solve this problem, the state value should be stored in reversly when both snake are alive. However, if the first green snake died first, it was confirmed that the saved part would return to the original, and the if condition statement was set differently.~
-
 # Research Introduction
 The uploaded code is the first of the seven research requirements submitted from https://openai.com/blog/requests-for-research-2/.
 
