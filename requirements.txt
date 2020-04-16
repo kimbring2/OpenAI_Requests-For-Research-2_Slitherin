@@ -1,0 +1,11 @@
+gym==0.14.0
+numpy
+Pillow
+absl-py
+future
+h5py
+imageio
+requests
+scipy
+six
+pygame

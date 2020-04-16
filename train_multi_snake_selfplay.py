@@ -252,8 +252,8 @@ def main():
                 # Initialize state, reward, end flag of agent1, agent2
                 s_agent_old = s[0]
                 s_agent_new = s[1]
-                s_agent_old = np.transpose(s_agent_old, (1, 2, 0)) # Change axis for Tensorflow placeholder
-                s_agent_new = np.transpose(s_agent_new, (1, 2, 0))
+                #s_agent_old = np.transpose(s_agent_old, (1, 2, 0)) # Change axis for Tensorflow placeholder
+                #s_agent_new = np.transpose(s_agent_new, (1, 2, 0))
                 s1_agent_old = s_agent_old
                 s1_agent_new = s_agent_new
                 d_agent_old = False
@@ -299,10 +299,12 @@ def main():
                     # Next state of agent1, agent2 
                     s1_agent_old = s1[0]
                     s1_agent_new = s1[1]
+                    #print("s1_agent_old.shape: " + str(s1_agent_old.shape))
+                    #print("s1_agent_new.shape: " + str(s1_agent_new.shape))
 
                     # change axis for Placeholder of Tensorflow
-                    s1_agent_old = np.transpose(s1_agent_old, (1, 2, 0))
-                    s1_agent_new = np.transpose(s1_agent_new, (1, 2, 0))
+                    #s1_agent_old = np.transpose(s1_agent_old, (1, 2, 0))
+                    #s1_agent_new = np.transpose(s1_agent_new, (1, 2, 0))
                    
                     # Save history of agent1, agent2 if there are not dead
                     if d_agent_old == False:
@@ -335,7 +337,7 @@ def main():
                     if j == max_epLength - 1:
                         win_index = np.random.randint(0,2)
 
-                    print("d: " + str(d))
+                    #print("d: " + str(d))
                     # Save a current end flag of each agent for next step
                     pre_d[0] = d[0]
                     pre_d[1] = d[1]
@@ -349,6 +351,9 @@ def main():
                     # Repeat a training 16 times
                     for q in range(0, 16):
                         trainBatch = myBuffer.sample(batch_size) # Get a random batch of experiences.
+
+                        for i in range(0, len(trainBatch[:,3])):
+                            print("trainBatch[i,3].shape: " + str(trainBatch[i,3].shape))
 
                         # Below we perform the Double-DQN update to the target Q-values
                         Q1 = sess.run(mainQN_new.predict, feed_dict={mainQN_new.imageIn:np.stack(trainBatch[:,3] / 3.0)})
