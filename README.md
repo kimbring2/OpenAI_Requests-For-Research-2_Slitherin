@@ -11,8 +11,21 @@ Agent training can be done through 'python train_multi_snake_selfplay.py'. Howev
 
 If you want to test the trained model, you can do 'python test_multi_snake_selfplay.py'. When this file is executed, the agent is rendered on the screen and the resulting video is also saved in the folder.
 
-# Environment Issue(Solved)
-~There is a problem that a state of two snake is saved reversly. In order to solve this problem, the state value should be stored in reversly when both snake are alive. However, if the first green snake died first, it was confirmed that the saved part would return to the original, and the if condition statement was set differently.~
+# Docker running option
+You can run that code using Docker. In main directory of that project, run below command for building a Docker image.
+```
+docker build --tag test:0.1 .
+```
+
+After finishing building, run Docker image and open bash shell of it.
+```
+docker run -it test:0.1 bash
+```
+
+In bash shell, run a project code.
+```
+pyhon train_single_snake_dddqn_v2.py
+```
 
 # Research Introduction
 The uploaded code is the first of the seven research requirements submitted from https://openai.com/blog/requests-for-research-2/.
@@ -27,7 +40,7 @@ The uploaded code is the first of the seven research requirements submitted from
 # Single Agent Warm-Up
 Before playing multiple snake games, I first solved a single snake game on dqn, but was able to tweet and generate decent results.
 
-Sigle Agent Result video : https://twitter.com/kimbring2/status/963671596610326528
+Sigle agent result : https://twitter.com/kimbring2/status/963671596610326528
 
 # Reference
 In this research, there was no given code for environment and algorithm, so I need to create and find a multi-agent snake game and self-play algorithm. Many excellent other researchers have published environment and algorithm on github, so I can use them as a reference to conduct research presented by OpenAI.
@@ -37,7 +50,7 @@ In this research, there was no given code for environment and algorithm, so I ne
 3. https://github.com/ingkanit/multi-snake-RL - PPO2 for Multi Snake playing
 4. https://web.stanford.edu/~surag/posts/alphazero.html - Self Play Algorithm
 
-Once again, thanks for these researchers.
+Once again, thanks for these project.
 
 # Environment Setting
 The experiment first purpose is solving two snakes environment. The height and width of state of environment is two dimensional array which have a shape of 15x15 and each snake have egcentric view which gives 2 for body of itself and 3 for head of itself. Body and head of other snake gets 4, 5 in turn. And -1 is given for dead snake and 1 is given for fruit. In addition to the current state, the previous three states can be used together, so that in addition to the snake position information, direction information can be grasped together by a network without RNN network. Each snake can move up, down, right, left for getting fruit which gives 1 reward and avoiding wall hitting which gives -1 reward. Here snakes must compete with each other and get the maximum reward. 
