@@ -1,18 +1,31 @@
-FROM tensorflow/tensorflow:1.13.1-gpu-py3
+# Start with CUDA base image
+FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
 
-RUN apt-get install -qy python3
-RUN apt-get install -qy python3-pip
+ENV DEBIAN_FRONTEND noninteractive
 
-RUN python -m pip install --upgrade pip
+# Install LXDE, VNC server, XRDP and Firefox
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+  firefox \
+  lxde-core \
+  lxterminal \
+  tightvncserver \
+  xrdp
 
-WORKDIR /usr/src/app
-COPY requirements.txt requirements.txt
-COPY opencv_python-4.2.0.34-cp35-cp35m-manylinux1_x86_64.whl opencv_python-4.2.0.34-cp35-cp35m-manylinux1_x86_64.whl 
-RUN pip install opencv_python-4.2.0.34-cp35-cp35m-manylinux1_x86_64.whl
+RUN apt-get install gnome-panel gnome-settings-daemon metacity nautilus gnome-terminal
 
-COPY tensorflow_gpu-1.13.1-cp35-cp35m-manylinux1_x86_64.whl tensorflow_gpu-1.13.1-cp35-cp35m-manylinux1_x86_64.whl
-RUN pip install tensorflow_gpu-1.13.1-cp35-cp35m-manylinux1_x86_64.whl
+# Set user for VNC server (USER is only for build)
+ENV USER root
+# Set default password
+COPY password.txt .
+RUN cat password.txt password.txt | vncpasswd && \
+  rm password.txt
+# Expose VNC port
+EXPOSE 5901
 
-COPY . .
+# Set XDRP to use TightVNC port
+RUN sed -i '0,/port=-1/{s/port=-1/port=5901/}' /etc/xrdp/xrdp.ini
 
-RUN pip install --default-timeout=1000 -r requirements.txt
+# Copy VNC script that handles restarts
+COPY vnc.sh /opt/
+RUN chmod +x /opt/vnc.sh
+CMD ["/opt/vnc.sh"]
