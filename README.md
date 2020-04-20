@@ -14,12 +14,12 @@ If you want to test the trained model, you can do 'python test_multi_snake_selfp
 # Docker running option
 You can run that code using Docker. In main directory of that project, run below command for building a Docker image.
 ```
-docker build --tag test:0.1 .
+docker build --tag multisnake:0.1 .
 ```
 
 After finishing building, run Docker image and open bash shell of it.
 ```
-docker run -it test:0.1 bash
+docker run -d -p 5901:5901 multisnake:0.1
 ```
 
 In bash shell, run a project code.
