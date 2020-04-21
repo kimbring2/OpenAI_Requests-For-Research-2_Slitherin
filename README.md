@@ -18,12 +18,12 @@ If you want to test the trained model, you can do 'python test_multi_snake_selfp
 # Docker running option
 You can run that code using Docker. In main directory of that project, run below command for building a Docker image. Please first line of Dockerfile from 'nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04' to your CUDA and CuDNN version image name.
 ```
-$docker build --tag multisnake:0.1 .
+$ docker build --tag multisnake:0.1 .
 ```
 
 After finishing building, run Docker image and open bash shell of it.
 ```
-$ docker run -d -p 5901:5901 multisnake:0.1
+$ nvidia-docker run -d -p 5901:5901 multisnake:0.1
 ```
 
 At bash shell, install Gnome GUI interface.
