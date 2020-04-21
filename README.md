@@ -12,15 +12,47 @@ Agent training can be done through 'python train_multi_snake_selfplay.py'. Howev
 If you want to test the trained model, you can do 'python test_multi_snake_selfplay.py'. When this file is executed, the agent is rendered on the screen and the resulting video is also saved in the folder.
 
 # Docker running option
-You can run that code using Docker. In main directory of that project, run below command for building a Docker image.
+You can run that code using Docker. In main directory of that project, run below command for building a Docker image. Please first line of Dockerfile from 'nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04' to your CUDA and CuDNN version image name.
 ```
-docker build --tag multisnake:0.1 .
+$docker build --tag multisnake:0.1 .
 ```
 
 After finishing building, run Docker image and open bash shell of it.
 ```
-docker run -d -p 5901:5901 multisnake:0.1
+$ docker run -d -p 5901:5901 multisnake:0.1
 ```
+
+At bash shell, install Gnome GUI interface.
+```
+$ apt-get install gnome-panel gnome-settings-daemon metacity nautilus gnome-terminal
+```
+
+Next, kill previous VNC process.
+```
+$ vncserver -kill :1
+```
+
+Open VNC setup file.
+```
+$ vi ~/.vnc/xstartup
+```
+
+Add some setting about GNOME.
+```
+gnome-panel &
+gnome-settings-daemon &
+metacity &
+nautilus &
+gnome-terminal &
+```
+
+Restart VNC server.
+```
+$ tightvncserver
+```
+
+Now, you can connect to Docker container remotely by using VNC client program. 
+
 
 In bash shell, run a project code.
 ```
