@@ -6,6 +6,10 @@ Research for improving Self-Play instability
 # Requirements
 Training is done using tensorflow-gpu == 1.13.1, and the environment only needs to import the uploaded multi_snake_2.py.
 
+# Tensorflow install file
+Tensorflow-gpu 1.13.1 for Python 3.5 :
+Tensorflow-gpu 1.13.1 for Python 3.6 : https://drive.google.com/open?id=1EX1hNDEQ-XkFTcaMAMxHW1fNs71zC-wr
+
 # How to run a code
 Agent training can be done through 'python train_multi_snake_selfplay.py'. However, the initial and reached values of epilson greedy must be corrected to 0.1 and 0.0001 for training at first. If you call a model that has already been trained and you are here and you want to train, load_model parameter should be set to True.
 
