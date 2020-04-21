@@ -77,10 +77,10 @@ Sigle agent result : https://twitter.com/kimbring2/status/963671596610326528
 # Reference
 In this research, there was no given code for environment and algorithm, so I need to create and find a multi-agent snake game and self-play algorithm. Many excellent other researchers have published environment and algorithm on github, so I can use them as a reference to conduct research presented by OpenAI.
 
-1. https://github.com/yenchenlin/DeepLearningFlappyBird - Single DQN
-2. https://github.com/bhairavmehta95/slitherin-gym - Multi Snake Env
+1. https://github.com/yenchenlin/DeepLearningFlappyBird - Single Deep Q-Network
+2. https://github.com/bhairavmehta95/slitherin-gym - Multi Snake Environment
 3. https://github.com/ingkanit/multi-snake-RL - PPO2 for Multi Snake playing
-4. https://web.stanford.edu/~surag/posts/alphazero.html - Self Play Algorithm
+4. https://web.stanford.edu/~surag/posts/alphazero.html - Self-play RL Algorithm
 
 Once again, thanks for these project.
 
