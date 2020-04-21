@@ -7,7 +7,7 @@ Research for improving Self-Play instability
 Training is done using tensorflow-gpu == 1.13.1, and the environment only needs to import the uploaded multi_snake_2.py.
 
 # Tensorflow install file
-Tensorflow-gpu 1.13.1 for Python 3.5 :
+Tensorflow-gpu 1.13.1 for Python 3.5 : https://drive.google.com/open?id=1332j7BQ1CmlCK05QerinCypdWp6kbIUo
 Tensorflow-gpu 1.13.1 for Python 3.6 : https://drive.google.com/open?id=1EX1hNDEQ-XkFTcaMAMxHW1fNs71zC-wr
 
 # How to run a code
