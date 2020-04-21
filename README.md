@@ -24,7 +24,7 @@ $ docker run -d -p 5901:5901 multisnake:0.1
 
 At bash shell, install Gnome GUI interface.
 ```
-$ apt-get install gnome-panel gnome-settings-daemon metacity nautilus gnome-terminal vim
+$ apt-get install gnome-panel gnome-settings-daemon metacity nautilus gnome-terminal vim git-core
 ```
 
 Next, kill previous VNC process.
