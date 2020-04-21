@@ -11,8 +11,6 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   tightvncserver \
   xrdp
 
-RUN apt-get install gnome-panel gnome-settings-daemon metacity nautilus gnome-terminal
-
 # Set user for VNC server (USER is only for build)
 ENV USER root
 # Set default password
